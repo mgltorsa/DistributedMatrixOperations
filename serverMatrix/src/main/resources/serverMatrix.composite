@@ -1,0 +1,24 @@
+<composite name="serverMatrix" 
+    xmlns="http://www.osoa.org/xmlns/sca/1.0" 
+    xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1"
+    targetNamespace="http://archisoft.com/matrixMultiplication">
+
+
+    <component name="server">
+        <service name="multiplication">
+            <frascati:binding.rmi host="localhost" serviceName="matrixMultiplication" port="1234"/>
+        </service>
+
+        <implementation.java class="com.archisoft.MatrixMultiplier" />
+
+    </component>
+
+    <component name="vectorMultiplier">
+
+        <implementation.java class="com.archisoft.multipliers.VectorMultiplier"/>
+    
+    </component>
+
+    <wire source="server/vectorMultiplier" target="vectorMultiplier/IVectorMultiplier"/>
+
+</composite>

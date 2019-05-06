@@ -1,0 +1,26 @@
+<composite name="clientMultiplication" 
+    xmlns="http://www.osoa.org/xmlns/sca/1.0" 
+    xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1" targetNamespace="http://archisoft.com/matrixMultiplication">
+    <service name="r" promote="client/r">
+    </service>
+    <component name="client">
+
+        <service name="r">
+            <interface.java interface="java.lang.Runnable" />
+        </service>
+
+        <implementation.java class="com.archisoft.Client" />
+
+    </component>
+
+    <component name="matrix">
+        <service name="multiplicar">
+            <interface.java interface="com.archisoft.interfaces.IMatrixOperations"/>
+        </service>
+        <implementation.java class="com.archisoft.multiplicacion.MultiplicateMatrix" />
+    </component>
+
+    <wire source="client/matrixOperations" target="matrix/multiplicar"/>
+
+
+</composite>
