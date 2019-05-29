@@ -4,7 +4,7 @@ package co.edu.icesi;
  * Hello world!
  *
  */
-public class App 
+public class Broker 
 {
     public static void main( String[] args )
     {
