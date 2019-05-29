@@ -4,7 +4,7 @@ package co.edu.icesi;
  * Hello world!
  *
  */
-public class App 
+public class MatrixOperations 
 {
     public static void main( String[] args )
     {
