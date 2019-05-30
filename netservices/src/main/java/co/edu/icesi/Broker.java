@@ -66,13 +66,22 @@ public class Broker extends UnicastRemoteObject implements IBroker {
 			throw new IllegalArgumentException("values cannot be empty");
 		}
 		List<String> ips = new ArrayList<String>();
-		List<String> byService = ipsByService.get(service);
+		// Descomentar y arreglar, no retorna nada
+		// List<String> byService = ipsByService.get(service);
 
-		if (byService.isEmpty()) {
-			throw new IllegalArgumentException("Doesn't exists with these protocols or services");
+		// if (byService.isEmpty()) {
+		// 	throw new IllegalArgumentException("Doesn't exists with these protocols or services");
+		// }
+
+		// ips.addAll(filterReachableIps(byService, service));		
+
+		//para test, comentar luego
+		for(List<String> ss : ipsByService.values()){
+			for(String str : ss){
+				ips.add(str);
+			}
 		}
 
-		ips.addAll(filterReachableIps(byService, service));		
 		
 
 		return ips;
