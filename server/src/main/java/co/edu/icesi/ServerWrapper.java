@@ -1,18 +1,13 @@
 package co.edu.icesi;
 
-import java.awt.Point;
 import java.rmi.Naming;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.List;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
-import co.edu.icesi.configurations.BrokerConfiguration;
 import co.edu.icesi.interfaces.IBroker;
 import co.edu.icesi.interfaces.IMatrixOperations;
-import co.edu.icesi.interfaces.IServer;
 
 /**
  * Hello world!
@@ -21,9 +16,6 @@ import co.edu.icesi.interfaces.IServer;
 @Service(interfaces=Runnable.class)
 public class ServerWrapper implements Runnable {
 	
-	@Reference
-	private BrokerConfiguration configuration;
-
 	@Property
 	private String service;
 
@@ -31,11 +23,15 @@ public class ServerWrapper implements Runnable {
 	private IMatrixOperations operations;
 
 	private IBroker broker;
+	
+	@Reference(name="broker")
+	public void setBroker(IBroker broker) {
+		this.broker=broker;
+	}
 
 	@Override
 	public void run() {
 		try {
-			setBrokerStub();
 			runTestBroker();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -57,12 +53,6 @@ public class ServerWrapper implements Runnable {
 			operations.rotateImage(0, 0, 0, 0, 0);
 		}
 	}
-
-	private void setBrokerStub() throws Exception {
-		String brokerHost = configuration.getBrokerHost();
-		int brokerPort = configuration.getBrokerPort();
-		String brokerService = configuration.getBrokerService();
-		broker = (IBroker) Naming.lookup("rmi://"+brokerHost+":"+brokerPort+"/"+brokerService);
-	}
+	
 	
 }
