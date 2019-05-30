@@ -1,8 +1,13 @@
 package co.edu.icesi.interfaces;
 
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface IMatrixOperations {
+import org.osoa.sca.annotations.Service;
+
+
+@Service
+public interface IMatrixOperations extends Remote, Runnable{
 
 	public int[][] rotateImage(int x, int y, int width, int height, double phi) throws RemoteException;
 

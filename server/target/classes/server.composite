@@ -5,20 +5,26 @@
   targetNamespace="http://frascati.ow2.org/helloworld-rmi"
   name="ServerRMI">
 
+  <service name="r" promote="server/Runnable">
+  </service>
+
   <component name="server">
  
-    <service name="s">
-      <frascati:binding.rmi host="localhost" serviceName="server" port="5000"/>
+    <service name="Runnable">
+      <interface.java interface="java.lang.Runnable"/>
     </service>
+    <!--<service name="s">
+      <frascati:binding.rmi host="localhost" serviceName="server" port="5000"/>
+    </service>-->
  
     <implementation.java class="co.edu.icesi.Server" />
  
   </component>
 
-  <component name="configuration">
+  <!--<component name="configuration">
     <implementation.java class="co.edu.icesi.configurations.BrokerConfiguration" />
   </component>
 
-  <wire source="server/configuration" target="configuration/BrokerConfiguration" />
+  <wire source="server/configuration" target="configuration/BrokerConfiguration" /> -->
 
 </composite>
