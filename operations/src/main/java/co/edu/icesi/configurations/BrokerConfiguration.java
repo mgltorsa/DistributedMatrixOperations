@@ -5,10 +5,13 @@ import org.osoa.sca.annotations.Property;
 public class BrokerConfiguration implements IBrokerConfiguration {
 
 
+	@Property
 	private String brokerHost;
 
+	@Property
 	private int brokerPort;
 
+	@Property
 	private String brokerService;
 
 

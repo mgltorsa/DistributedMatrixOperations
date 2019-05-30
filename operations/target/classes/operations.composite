@@ -5,9 +5,8 @@
   targetNamespace="http://frascati.ow2.org/helloworld-rmi"
   name="OperationsRMI">
 
-  <service name="r" promote="matrixOperationsRegister/Runnable">
+  <service name="r" promote="matrixOperationsRegister/Runnable">    
   </service>
-
 
   <service name="ops " promote="Operations/operations">
       <frascati:binding.rmi host="localhost/" serviceName="operations" port="8888"/>
@@ -19,35 +18,29 @@
       <interface.java interface="co.edu.icesi.interfaces.IMatrixOperations" />
     </service>
  
+    
     <implementation.java class="co.edu.icesi.MatrixOperations" />
  
   </component>
 
   <component name="matrixOperationsRegister">
  
- 	<!--<reference name="broker">
-      <frascati:binding.rmi host="172.30.176.134/" serviceName="redirecting" port="7777"/>
-    </reference>-->
- 
-    <!--<service name="r">
-      <frascati:binding.rmi host="localhost" serviceName="operations" port="8888"/>
-      <interface.java interface="">
-    </service> -->
- 
+    <property name="port">8888</property>
+    <property name="serviceName">operations</property>
     <implementation.java class="co.edu.icesi.MatrixOperationsRegister" />
  
   </component>
 
 
 
-  <!--<component name="config">
-    <property name="host">localhost</property>
-    <property name="port">7777</property>
-    <property name="service">broker</property>
+  <component name="config">
+    <property name="brokerHost">localhost</property>
+    <property name="brokerPort">7777</property>
+    <property name="brokerService">redirecting</property>
     <implementation.java class="co.edu.icesi.configurations.BrokerConfiguration" />
   </component>
 
-  <wire source="matrixOperations/configuration" target="config/IBrokerConfiguration" /> -->
+  <wire source="matrixOperationsRegister/configuration" target="config/IBrokerConfiguration" />
 
  
 

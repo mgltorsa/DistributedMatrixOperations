@@ -5,7 +5,7 @@
   targetNamespace="http://frascati.ow2.org/helloworld-rmi"
   name="ServerRMI">
 
-  <service name="r" promote="server/Runnable">
+  <service name="r" promote="wrapper/Runnable">
   </service>
 
   <service name="s" promote="server/service">
@@ -14,25 +14,29 @@
 
   <component name="server">
 
-  <service name="service">
+    <service name="service">
       <interface.java interface="co.edu.icesi.interfaces.IServer" />
     </service>
- 
-    <service name="Runnable">
-      <interface.java interface="java.lang.Runnable"/>
-    </service>
-    <!--<service name="s">
-      <frascati:binding.rmi host="localhost" serviceName="server" port="5000"/>
-    </service>-->
  
     <implementation.java class="co.edu.icesi.Server" />
  
   </component>
 
-  <!--<component name="configuration">
+  <component name="wrapper">
+    <service name="Runnable">
+      <interface.java interface="java.lang.Runnable"/>
+    </service> 
+    <property name="service">operations</property>  
+    <implementation.java class="co.edu.icesi.ServerWrapper" />
+  </component>
+
+  <component name="config">
+    <property name="brokerHost">localhost</property>
+    <property name="brokerPort">7777</property>
+    <property name="brokerService">redirecting</property>
     <implementation.java class="co.edu.icesi.configurations.BrokerConfiguration" />
   </component>
 
-  <wire source="server/configuration" target="configuration/BrokerConfiguration" /> -->
+  <wire source="wrapper/configuration" target="config/IBrokerConfiguration" />
 
 </composite>
