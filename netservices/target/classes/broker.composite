@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+  xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1"
+  targetNamespace="http://frascati.ow2.org/helloworld-rmi"
+  name="BrokerRMI">
+
+  <service name="broker" promote="Broker/redirecting">
+      <frascati:binding.rmi host="localhost/" serviceName="redirecting" port="7777"/>
+  </service>
+
+  <component name="Broker">
+ 
+    <service name="redirecting">
+      <interface.java interface="co.edu.icesi.interfaces.IBroker" />
+    </service>
+ 
+    <implementation.java class="co.edu.icesi.Broker" />
+ 
+  </component>
+
+ 
+
+</composite>
