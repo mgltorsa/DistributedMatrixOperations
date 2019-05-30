@@ -1,8 +1,16 @@
 package co.edu.icesi;
 
 import java.awt.Point;
+import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.osoa.sca.annotations.Reference;
+
+import co.edu.icesi.interfaces.IBroker;
+import co.edu.icesi.interfaces.IMatrixOperations;
 import co.edu.icesi.interfaces.IServer;
 
 /**
@@ -10,6 +18,12 @@ import co.edu.icesi.interfaces.IServer;
  */
 public class Server extends UnicastRemoteObject implements IServer {
 
+	
+	private IBroker broker;
+	
+	private String service;
+	
+	private List<IMatrixOperations> operations = new ArrayList<IMatrixOperations>();
 
     private static final long serialVersionUID = 1L;
 
@@ -17,6 +31,11 @@ public class Server extends UnicastRemoteObject implements IServer {
         super();
     }
 
+    @Reference(name="broker")
+    public void setBroker(IBroker broker) {
+    	this.broker=broker;
+    }
+    
     @Override
     public int[][] rotate(Point init, Point last){
 
