@@ -5,10 +5,25 @@
   targetNamespace="http://frascati.ow2.org/helloworld-rmi"
   name="OperationsRMI">
 
-  <service name="r" promote="matrixOperations/Runnable">
+  <service name="r" promote="matrixOperationsRegister/Runnable">
   </service>
 
-  <component name="matrixOperations">
+
+  <service name="ops " promote="Operations/operations">
+      <frascati:binding.rmi host="localhost/" serviceName="operations" port="8888"/>
+  </service>
+
+  <component name="Operations">
+ 
+    <service name="operations">
+      <interface.java interface="co.edu.icesi.interfaces.IMatrixOperations" />
+    </service>
+ 
+    <implementation.java class="co.edu.icesi.MatrixOperations" />
+ 
+  </component>
+
+  <component name="matrixOperationsRegister">
  
  	<!--<reference name="broker">
       <frascati:binding.rmi host="172.30.176.134/" serviceName="redirecting" port="7777"/>
@@ -19,9 +34,11 @@
       <interface.java interface="">
     </service> -->
  
-    <implementation.java class="co.edu.icesi.MatrixOperations" />
+    <implementation.java class="co.edu.icesi.MatrixOperationsRegister" />
  
   </component>
+
+
 
   <!--<component name="config">
     <property name="host">localhost</property>
