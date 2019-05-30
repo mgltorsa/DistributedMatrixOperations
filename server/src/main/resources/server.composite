@@ -8,7 +8,15 @@
   <service name="r" promote="server/Runnable">
   </service>
 
+  <service name="s" promote="server/service">
+      <frascati:binding.rmi host="localhost/" serviceName="server" port="5000"/>
+  </service>
+
   <component name="server">
+
+  <service name="service">
+      <interface.java interface="co.edu.icesi.interfaces.IServer" />
+    </service>
  
     <service name="Runnable">
       <interface.java interface="java.lang.Runnable"/>

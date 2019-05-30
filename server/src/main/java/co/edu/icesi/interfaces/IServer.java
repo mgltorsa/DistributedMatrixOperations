@@ -1,9 +1,13 @@
 package co.edu.icesi.interfaces;
 
+import java.awt.Point;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
 import org.osoa.sca.annotations.Service;
 
-@Service(interfaces=Runnable.class)
-public interface IServer {
+@Service
+public interface IServer extends Remote {
 
-    public void rotate();
+    public int[][] rotate(Point init, Point last) throws RemoteException;
 }

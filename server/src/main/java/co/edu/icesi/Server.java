@@ -1,5 +1,6 @@
 package co.edu.icesi;
 
+import java.awt.Point;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -41,12 +42,12 @@ public class Server extends UnicastRemoteObject implements IServer, Runnable {
 		configuration.setBrokerPort(7777);
 		configuration.setBrokerService("redirecting");
 		setBrokerConfiguration(configuration);
-		try {
-			setupServer();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		// try {
+		// 	setupServer();
+		// } catch (Exception e) {
+		// 	// TODO Auto-generated catch block
+		// 	e.printStackTrace();
+		// }
 	}
 
 
@@ -69,8 +70,9 @@ public class Server extends UnicastRemoteObject implements IServer, Runnable {
 		
 	}
 
-	public void rotate(){
-		System.out.println("Rotating");
+	public int[][] rotate(Point init, Point last){
+
+		return new int[2][2];
 	}
 
 	
