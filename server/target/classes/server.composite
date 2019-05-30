@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+  xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1"
+  targetNamespace="http://frascati.ow2.org/helloworld-rmi"
+  name="ServerRMI">
+
+  <component name="server">
+ 
+    <service name="s">
+      <frascati:binding.rmi host="localhost" serviceName="server" port="5000"/>
+    </service>
+ 
+    <implementation.java class="co.edu.icesi.Server" />
+ 
+  </component>
+
+  <component name="configuration">
+    <implementation.java class="co.edu.icesi.configurations.BrokerConfiguration" />
+  </component>
+
+  <wire source="server/configuration" target="configuration/BrokerConfiguration" />
+
+</composite>
