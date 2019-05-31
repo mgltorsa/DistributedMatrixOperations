@@ -7,6 +7,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import co.edu.icesi.interfaces.IBroker;
@@ -20,7 +21,8 @@ public class Server extends UnicastRemoteObject implements IServer {
 
 	
 	private IBroker broker;
-	
+    
+    @Property
 	private String service;
 	
 	private List<IMatrixOperations> operations = new ArrayList<IMatrixOperations>();
