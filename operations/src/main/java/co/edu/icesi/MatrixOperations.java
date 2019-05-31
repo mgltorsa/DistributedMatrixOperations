@@ -20,7 +20,7 @@ public class MatrixOperations implements IMatrixOperations {
     }
 
     @Override
-    public double[][] matrixMultiplication(double[] vector, double[][] matrix) {
+    public double[] matrixMultiplication(double[] vector, double[][] matrix) {
         return null;
     }
 
@@ -37,7 +37,9 @@ public class MatrixOperations implements IMatrixOperations {
         for(int i=initPoint[0];i<lastPoint[0];i++){
             for (int j = initPoint[1]; j < lastPoint[1]; j++) {
                 double[] vector = new double[]{i,j};
-                
+                double[][] tempRotatedPoints = matrixMultiplication(vector, rotationMatrix);
+
+
             }
         }
 
