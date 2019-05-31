@@ -10,4 +10,7 @@ public interface IBalancer{
 
 	public String getMultiplicationService(String service) throws IllegalArgumentException;
 
+	public void notify(String ip);
+
+
 }

@@ -6,7 +6,7 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 import org.osoa.sca.annotations.Service;
 
-import co.edu.icesi.interfaces.IBroker;
+import co.edu.icesi.interfaces.IBalancer;
 
 /**
  * MatrixOperations
@@ -14,7 +14,7 @@ import co.edu.icesi.interfaces.IBroker;
 @Service
 public class MatrixOperationsRegister {
 
-	private IBroker broker;
+	private IBalancer broker;
 
 	@Property
 	private int port;
@@ -23,7 +23,7 @@ public class MatrixOperationsRegister {
 	private String serviceName;
 
 	@Reference(name = "broker")
-	public void setBroker(IBroker broker) {
+	public void setBroker(IBalancer broker) {
 
 		this.broker = broker;
 		try {
