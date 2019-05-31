@@ -1,8 +1,6 @@
 package co.edu.icesi;
 
 import java.net.InetAddress;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,17 +12,12 @@ import co.edu.icesi.interfaces.IBroker;
  * Hello world!
  *
  */
-public class Broker extends UnicastRemoteObject implements IBroker {
+public class Broker implements IBroker {
 	
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1L;
-
-	public Broker() throws RemoteException {
-		super();
-		System.out.println("Broker initialized");
-	}
+	
 
 	private static HashMap<String, List<String>> ipsByService = new HashMap<String, List<String>>();
 

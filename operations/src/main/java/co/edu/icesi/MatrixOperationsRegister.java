@@ -11,23 +11,30 @@ import co.edu.icesi.interfaces.IBroker;
 /**
  * MatrixOperations
  */
-@Service(interfaces = Runnable.class)
-public class MatrixOperationsRegister implements Runnable {
+@Service
+public class MatrixOperationsRegister {
 
 	private IBroker broker;
-	
+
 	@Property
 	private int port;
-	
+
 	@Property
-	private String serviceName;	
-	
-	
-	@Reference(name="broker")
+	private String serviceName;
+
+	@Reference(name = "broker")
 	public void setBroker(IBroker broker) {
-		this.broker=broker;
-	}
-	
+
+		this.broker = broker;
+		try {
+			registerAsService();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}	
+
 
 	private void registerAsService() throws Exception {
 		
@@ -37,13 +44,5 @@ public class MatrixOperationsRegister implements Runnable {
 		broker.register("rmi", ip, port, serviceName);
 	}
 	
-	@Override
-	public void run() {
-		try {
-			registerAsService();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 }

@@ -5,11 +5,11 @@
   targetNamespace="http://frascati.ow2.org/helloworld-rmi"
   name="OperationsRMI">
 
-  <service name="ops" promote="Operations/operations">
+  <service name="ops" promote="operations/operations">
       <frascati:binding.rmi host="localhost" serviceName="operations" port="5100"/>
   </service>
 
-  <component name="Operations">
+  <component name="operations">
  
     <service name="operations">
       <interface.java interface="co.edu.icesi.interfaces.IMatrixOperations" />
@@ -19,17 +19,22 @@
  
   </component>
 
+  <component name="vectorOperations">
+    <implementation.java class="co.edu.icesi.vectors.VectorOperations"/>
+  </component>
+
   <component name="matrixOperationsRegister">
+
  
  	<reference name="broker">
- 		<frascati:binding.rmi host="192.168.161.23" serviceName="redirecting" port="5555"/>
+ 		<frascati:binding.rmi host="192.168.161.24" serviceName="redirecting" port="5555"/>
  		<interface.java interface="co.edu.icesi.interfaces.IBroker" />
  	</reference>
     <property name="port">5100</property>
     <property name="serviceName">operations</property>
-    <implementation.java class="co.edu.icesi.MatrixOperationsRegister" />
- 
+    <implementation.java class="co.edu.icesi.MatrixOperationsRegister" /> 
   </component>
  
+  <wire source="operations/vectorOperations" target="vectorOperations/IVectorOperations" />
 
 </composite>

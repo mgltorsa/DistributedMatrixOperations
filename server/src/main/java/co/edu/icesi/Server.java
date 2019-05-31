@@ -7,6 +7,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import co.edu.icesi.interfaces.IBroker;
@@ -16,20 +17,16 @@ import co.edu.icesi.interfaces.IServer;
 /**
  * Server
  */
-public class Server extends UnicastRemoteObject implements IServer {
+public class Server implements IServer {
 
 	
 	private IBroker broker;
-	
+    
+    @Property
 	private String service;
 	
 	private List<IMatrixOperations> operations = new ArrayList<IMatrixOperations>();
 
-    private static final long serialVersionUID = 1L;
-
-    public Server() throws RemoteException {
-        super();
-    }
 
     @Reference(name="broker")
     public void setBroker(IBroker broker) {

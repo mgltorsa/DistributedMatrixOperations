@@ -1,12 +1,11 @@
 package co.edu.icesi.interfaces;
 
-import java.rmi.Remote;
 import java.util.List;
 
 /**
  * Broker
  */
-public interface IBroker extends Remote {
+public interface IBroker {
 
     public void register(String protocol, String ip, int port, String service) throws IllegalArgumentException;
     
