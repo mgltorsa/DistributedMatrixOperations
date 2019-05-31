@@ -7,6 +7,11 @@ netservices/target/classes
 operations/target/*.*
 operations/target/classes
 
+client/target/*.*
+client/target/classes
+
+
+
 
 *.class
 *.jar
