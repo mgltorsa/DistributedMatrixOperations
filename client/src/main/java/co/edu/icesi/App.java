@@ -6,46 +6,52 @@ import co.edu.icesi.implementation.ImageProcessor;
 public class App {
 
 	public static void main(String[] args) {
-		double sin = Math.sin(Math.PI / 4.0);
-		double cos = Math.cos(Math.PI / 4.0);
+		double sin = Math.sin(2*(Math.PI / 3.0));
+		double cos = Math.cos(2*(Math.PI / 3.0));
 
 		ImageProcessor ip = new ImageProcessor();
 
 		ip.setImageDestination("./data/dest/image.jpg");
 		ip.setImageSource("./data/source/image.jpg");
 
-		ip.splitImage(500,500);
+		ip.splitImage(20,20);
 
 		ImageChunk ic = ip.getRemainingImageChunk();
 
-		int mx = 0, Mx = 0, my = 0, My = 0;
+		int mx = Integer.MAX_VALUE, Mx = Integer.MIN_VALUE, my = Integer.MAX_VALUE, My = Integer.MIN_VALUE;
 
 		int arraySize = ic.getHeight() * ic.getWidth();
 		
 		int[][] points = new int[2][arraySize + 2];
 
-		for (int j = 0; j < points.length; j++) {
+		for (int j = 0; j < points[0].length; j++) {
 			
-			int i = j%ic.getWidth();
+			double w = ic.getWidth();
+			int x = j%ic.getWidth();
+			int y = (int) ((j/w)%ic.getHeight());
 			
-			points[0][i] = (int) (cos * (i) + (-sin * j));
-			points[1][j] = (int) (cos * (j) + (sin * i));
+			int xp = (int) (cos * (x) - (sin * y));
+			int yp = (int) (cos * (y) + (sin * x));
+			points[0][j] = xp;
+			points[1][j] = yp;
 			
-			if(points[i][j] < mx)
-				mx = points[i][j];
-			if(points[i][j] > Mx)
-				Mx = points[i][j];
-			if(points[i][j] < my)
-				my = points[i][j];
-			if(points[i][j] < My)
-				My = points[i][j];
+			if(xp < mx) {
+//				System.out.println(mx);
+				mx = points[0][j];}
+			if(xp > Mx)
+				Mx = points[0][j];
+			if(yp < my)
+				my = points[1][j];
+			if(yp > My)
+				My = points[1][j];
 		}
 		
+//		System.out.println(my);
 		points[0][arraySize] = mx;
 		points[1][arraySize] = Mx;
 		
-		points[0][arraySize+1] = mx;
-		points[1][arraySize+1] = Mx;
+		points[0][arraySize+1] = my;
+		points[1][arraySize+1] = My;
 		
 		ip.setImageChunkProcessed(points, ic);
 

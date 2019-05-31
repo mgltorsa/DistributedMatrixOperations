@@ -7,7 +7,8 @@ import co.edu.icesi.implementation.ImageChunk;
 
 public interface IImageFileProcessor {
 
-	public BufferedImage imageChunk(int x, int y, int height, int width);
+	
+	public BufferedImage imageChunk(int x, int y, int height, int width, String path);
 
 	public void saveImageChunk(int[][] points, ImageChunk imageChunk);
 	
