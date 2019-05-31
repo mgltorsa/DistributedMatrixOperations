@@ -59,5 +59,10 @@ public class Balancer implements IBalancer {
 		return objService.getIp()+":"+objService.getPort();
 	}
 
+	@Override
+	public void notify(String ip) {
+
+	}
+
 	
 }
