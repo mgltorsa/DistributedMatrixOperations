@@ -6,13 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
 
-import co.edu.icesi.interfaces.IBroker;
+import co.edu.icesi.interfaces.IBalancer;
 
 /**
  * Hello world!
  *
  */
-public class Broker implements IBroker {
+public class Balancer implements IBalancer {
 	
 	/**
 	 * 
