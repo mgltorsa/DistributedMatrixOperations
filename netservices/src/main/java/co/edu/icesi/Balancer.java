@@ -41,6 +41,8 @@ public class Balancer implements IBalancer {
 		ipsByService.put(ip, objService);
 		priorityQueue.add(objService);
 
+		notify();
+
 	}
 
 	@Override
@@ -66,13 +68,14 @@ public class Balancer implements IBalancer {
 	}
 
 	@Override
-	public void notify(String ip) {
+	public void notifyByService(String ip) {
+
 		Service service = ipsByService.get(ip);
 		priorityQueue.remove(service);
 		int work = service.getWork()-1;
 		service.setWork(work);
 		priorityQueue.add(service);
-		
+		notify();		
 	}
 
 	
