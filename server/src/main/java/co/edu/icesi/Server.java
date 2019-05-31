@@ -32,11 +32,17 @@ public class Server implements IServer {
     public void setBroker(IBroker broker) {
     	this.broker=broker;
     }
-    
-    @Override
-    public int[][] rotate(Point init, Point last){
 
-		return new int[2][2];
-	}
+    @Override
+    public int[][] rotate(int[] initPoint, int[] lastPoint) {
+        return null;
+    }
+
+    @Override
+    public int[][] rotate(int[] initPoint, int[] lastPoint, int[] middlePoint) {
+        return null;
+    }
+    
+    
 
 }
