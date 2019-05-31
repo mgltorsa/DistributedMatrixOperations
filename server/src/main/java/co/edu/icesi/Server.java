@@ -35,6 +35,7 @@ public class Server implements IServer {
 
     @Override
     public int[][] rotate(int[] initPoint, int[] lastPoint) {
+        
         return null;
     }
 
