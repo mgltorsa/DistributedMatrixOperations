@@ -1,10 +1,10 @@
 package co.edu.icesi;
 
-import java.net.InetAddress;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.PriorityQueue;
 
 import co.edu.icesi.interfaces.IBroker;
 
@@ -19,7 +19,14 @@ public class Broker implements IBroker {
 	 */
 	
 
-	private static HashMap<String, List<String>> ipsByService = new HashMap<String, List<String>>();
+	private static HashMap<String, List<Service>> ipsByService = new HashMap<String, List<Service>>();
+	private static PriorityQueue<Service> priorityQueue = new PriorityQueue<Service>(new Comparator<Service>() {
+
+		@Override
+		public int compare(Service o1, Service o2) {
+			return Integer.compare(o1.getWork(), o2.getWork());
+		}
+	});
 
 	@Override
 	public void register(String protocol, String ip, int port, String service) throws IllegalArgumentException {
@@ -32,24 +39,24 @@ public class Broker implements IBroker {
 		}
 
 		if (!ipsByService.containsKey(service)) {
-			ipsByService.put(service, new ArrayList<String>());
+			ipsByService.put(service, new ArrayList<Service>());
 		}
 
 		
-		ipsByService.get(service).add(ip+":"+port);
-		
-		System.out.println("Printing services");
-		for(List<String> services : ipsByService.values()) {
-			for(String s : services) {
-				System.out.println("s->"+s);
-			}
-		}
+		Service objService = new Service(ip, port);
+		ipsByService.get(service).add(objService);
+		priorityQueue.add(objService);
 
 	}
 
 	@Override
 	public String getMultiplicationService(String service) throws IllegalArgumentException {
-		return null;
+
+		Service objService=priorityQueue.poll();
+		objService.setWork(objService.getWork()+1);
+		priorityQueue.add(objService);
+
+		return objService.getIp()+":"+objService.getPort();
 	}
 
 	
