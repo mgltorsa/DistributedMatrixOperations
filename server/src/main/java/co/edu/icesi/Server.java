@@ -17,7 +17,7 @@ import co.edu.icesi.interfaces.IServer;
 /**
  * Server
  */
-public class Server extends UnicastRemoteObject implements IServer {
+public class Server implements IServer {
 
 	
 	private IBroker broker;
@@ -27,11 +27,6 @@ public class Server extends UnicastRemoteObject implements IServer {
 	
 	private List<IMatrixOperations> operations = new ArrayList<IMatrixOperations>();
 
-    private static final long serialVersionUID = 1L;
-
-    public Server() throws RemoteException {
-        super();
-    }
 
     @Reference(name="broker")
     public void setBroker(IBroker broker) {
