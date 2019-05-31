@@ -13,9 +13,5 @@ public interface IMatrixOperations{
 
     public double[][] matrixMultiplication(double[][] matrix, double[][] matrix2);
 
-    public double[][] matrixMultiplication(double[][] matrix, double[] vector);
-
-    public double[][] matrixMultiplication(double[] vector1, double[] vector2);
-
     public double[][] matrixMultiplication(double[] vector, double[][] matrix);
 }
