@@ -47,55 +47,10 @@ public class Broker implements IBroker {
 
 	}
 
-	/**
-	 * list, a list of string with a format as ip:port
-	 */
 	@Override
-	public List<String> getServicesIP(String service) throws IllegalArgumentException {
-		if (service == null ) {
-			throw new IllegalArgumentException("values cannot be null");
-		}
-		if (service.isEmpty()) {
-			throw new IllegalArgumentException("values cannot be empty");
-		}
-		List<String> ips = new ArrayList<String>();
-		// Descomentar y arreglar, no retorna nada
-		// List<String> byService = ipsByService.get(service);
-
-		// if (byService.isEmpty()) {
-		// 	throw new IllegalArgumentException("Doesn't exists with these protocols or services");
-		// }
-
-		// ips.addAll(filterReachableIps(byService, service));		
-
-		//para test, comentar luego
-		for(List<String> ss : ipsByService.values()){
-			for(String str : ss){
-				ips.add(str);
-			}
-		}
-
-		
-
-		return ips;
+	public String getMultiplicationService(String service) throws IllegalArgumentException {
+		return null;
 	}
 
-	private Collection<? extends String> filterReachableIps(List<String> by, String service) {
-				
-		List<String> ips = new ArrayList<String>();		
-		for (String host : by) {
-			try {
-				InetAddress inet = InetAddress.getByName(host);
-				if(inet.isReachable(200)) {
-					ips.add(host);
-				}else {
-					ipsByService.get(service).remove(host);
-				}
-			} catch (Exception e) {
-				// TODO: handle exception
-			}
-		}
-		
-		return ips;
-	}
+	
 }
