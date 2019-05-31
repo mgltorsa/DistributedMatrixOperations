@@ -38,6 +38,17 @@ public class Service {
     public void setWork(int work) {
         this.work = work;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Service){
+            return false;
+        }
+        else{
+            Service objService = (Service) obj;
+            return this.ip.equals(objService.ip);
+        }
+    }
     
     
 }

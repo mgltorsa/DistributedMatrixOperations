@@ -13,13 +13,12 @@ import co.edu.icesi.interfaces.IBalancer;
  *
  */
 public class Balancer implements IBalancer {
-	
+
 	/**
 	 * 
 	 */
-	
 
-	private static HashMap<String, List<Service>> ipsByService = new HashMap<String, List<Service>>();
+	private static HashMap<String, Service> ipsByService = new HashMap<String, Service>();
 	private static PriorityQueue<Service> priorityQueue = new PriorityQueue<Service>(new Comparator<Service>() {
 
 		@Override
@@ -38,13 +37,8 @@ public class Balancer implements IBalancer {
 			throw new IllegalArgumentException("values cannot be empty");
 		}
 
-		if (!ipsByService.containsKey(service)) {
-			ipsByService.put(service, new ArrayList<Service>());
-		}
-
-		
 		Service objService = new Service(ip, port);
-		ipsByService.get(service).add(objService);
+		ipsByService.put(ip, objService);
 		priorityQueue.add(objService);
 
 	}
@@ -52,16 +46,33 @@ public class Balancer implements IBalancer {
 	@Override
 	public String getMultiplicationService(String service) throws IllegalArgumentException {
 
-		Service objService=priorityQueue.poll();
-		objService.setWork(objService.getWork()+1);
-		priorityQueue.add(objService);
+		while (priorityQueue.isEmpty()) {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		synchronized (this){
+			Service objService=priorityQueue.poll();
+			int work = objService.getWork()+1;
+			objService.setWork(work);
+			priorityQueue.add(objService);
+			ipsByService.get(objService.getIp()).setWork(work);
+			return objService.getIp()+":"+objService.getPort();
+		}
 
-		return objService.getIp()+":"+objService.getPort();
 	}
 
 	@Override
 	public void notify(String ip) {
-
+		Service service = ipsByService.get(ip);
+		priorityQueue.remove(service);
+		int work = service.getWork()-1;
+		service.setWork(work);
+		priorityQueue.add(service);
+		
 	}
 
 	
