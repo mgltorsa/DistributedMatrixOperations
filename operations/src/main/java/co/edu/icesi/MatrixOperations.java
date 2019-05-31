@@ -25,14 +25,14 @@ public class MatrixOperations implements IMatrixOperations {
     }
 
     @Override
-    public int[][][] rotatePointsInRegion(int[] initPoint, int[] lastPoint, int[] middlepoint, double phi) {
+    public int[][] rotatePointsInRegion(int[] initPoint, int[] lastPoint, int[] middlepoint, double phi) {
 
         double[][] rotationMatrix= getRotationMatrix(phi);
         
-        int nx = initPoint.length;
-        int ny = lastPoint.length;
+        int dimension = initPoint.length;
+        
         int n = getPointsInRegion(initPoint, lastPoint);
-        int[][][] listOfRotatedPoints = new int[n][nx][ny];
+        int[][] listOfRotatedPoints = new int[n][dimension];
 
         for(int i=initPoint[0];i<lastPoint[0];i++){
             for (int j = initPoint[1]; j < lastPoint[1]; j++) {
@@ -45,7 +45,7 @@ public class MatrixOperations implements IMatrixOperations {
     }
 
     @Override
-    public int[][][] rotatePointsInRegion(int[] initPoint, int[] lastPoint, double phi) {
+    public int[][] rotatePointsInRegion(int[] initPoint, int[] lastPoint, double phi) {
        return null;
     }
 
