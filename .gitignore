@@ -2,3 +2,4 @@ server/target/*.*
 netservices/target/*.*
 operations/target/*.*
 *.class
+*.jar
