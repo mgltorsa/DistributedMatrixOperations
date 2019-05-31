@@ -34,7 +34,6 @@ public class App3 {
 		writer.prepareInsertEmpty(0, ImageTypeSpecifier., width, height, imageMetadata, thumbnails, param);
 		System.out.println(writer.canInsertImage(0));
 //		writer.write(null, new IIOImage(bf, null, null), param);
-//		byte[] data = baos.toByteArray();
 //		writer.write(null, image, param);
 		writer.dispose();
 		ios.close();
