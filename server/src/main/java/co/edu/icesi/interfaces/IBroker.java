@@ -1,7 +1,7 @@
 package co.edu.icesi.interfaces;
 
 
-public interface IBalancer{
+public interface IBroker{
 
 	public void register(String ip, int port, String service) throws IllegalArgumentException;
 

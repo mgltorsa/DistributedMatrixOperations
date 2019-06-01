@@ -3,7 +3,7 @@ package co.edu.icesi.interfaces;
 
 import org.osoa.sca.annotations.Service;
 
-@Service
+@Service(interfaces = Runnable.class)
 public interface IServer {
 
     public int[][] rotate(int[] initPoint, int[] lastPoint);
