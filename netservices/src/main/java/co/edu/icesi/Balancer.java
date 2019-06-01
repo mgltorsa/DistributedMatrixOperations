@@ -1,9 +1,7 @@
 package co.edu.icesi;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.PriorityQueue;
 
 import co.edu.icesi.interfaces.IBalancer;
@@ -19,11 +17,11 @@ public class Balancer implements IBalancer {
 	 */
 
 	private static HashMap<String, Service> ipsByService = new HashMap<String, Service>();
-	private static PriorityQueue<Service> priorityQueue = new PriorityQueue<Service>(new Comparator<Service>() {
+	private static PriorityQueue<Service> priorityQueue = new PriorityQueue<Service>(10, new Comparator<Service>() {
 
 		@Override
 		public int compare(Service o1, Service o2) {
-			return Integer.compare(o1.getWork(), o2.getWork());
+			return o1.getWork() == o2.getWork() ? 0:o1.getWork()<o2.getWork() ? -1 : 1;
 		}
 	});
 
