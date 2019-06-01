@@ -28,7 +28,7 @@ public class Server implements IServer, Runnable {
 	@Property
 	private String service;
 
-	private IMatrixOperations operations;
+	private static IMatrixOperations operations;
 
 	@Reference(name = "broker")
 	public void setBalancer(IBroker broker) {
@@ -50,10 +50,21 @@ public class Server implements IServer, Runnable {
 		System.out.println(ip + ":" + port);
 		try {
 			operations = (IMatrixOperations) Naming.lookup("rmi://" + ip + ":" + port + "/" + service);
+			System.out.println(operations);
 
-			double[][] res = operations.matrixMultiplication(new double[][] { { 1 }, { 2 } },
-					new double[][] { { 1 }, { 2 } });
-			System.out.println(res);
+			double cosPhi = Math.cos(Math.toRadians(45));
+			double sinPhi = Math.sin(Math.toRadians(45));
+			double[][] res = operations.matrixMultiplication(new double[][] {{cosPhi, -sinPhi},
+            {sinPhi, cosPhi}},
+					new double[][] { { 0 }, { 499 } });
+			System.out.println("Matrix: {");
+			for (int i = 0; i < res.length; i++) {
+				for (int j = 0; j < res[0].length; j++) {
+					System.out.print(res[i][j]+",");
+				}
+				System.out.println();
+			}
+			System.out.println("}");
 
 		} catch (Exception e) {
 			// TODO: handle exception
@@ -61,23 +72,14 @@ public class Server implements IServer, Runnable {
 		}
 	}
 
-	@Override
-	public int[][] rotate(int[] initPoint, int[] lastPoint) {
-
-		return null;
-	}
-
-	@Override
-	public int[][] rotate(int[] initPoint, int[] lastPoint, int[] middlePoint) {
-		return null;
-	}
 
 	@Override
 	public void recieve(String sourcePath, String destPath, Double phi) {
 		// TODO Auto-generated method stub
 		scheduler.setImageSource(sourcePath);
 		scheduler.setImageDestination(destPath);
-		scheduler.getImageProcessor().splitImage(500, 500);
+		scheduler.getImageFileProcessor().setImageProperties();
+		scheduler.getImageProcessor().splitImage();
 
 		ImageChunk ic = scheduler.getImageProcessor().retriveImageChunk();
 
@@ -86,20 +88,14 @@ public class Server implements IServer, Runnable {
 		String port = info[1];
 
 		System.out.println(ip + ":" + port);
+		System.out.println(ic.getHeight() + " " +ic.getWidth());
 		try {
 			operations = (IMatrixOperations) Naming.lookup("rmi://" + ip + ":" + port + "/" + service);
 			
 			int[][] res = operations.rotatePointsInRegion(new int[] { 0, 0 },
 					new int[] { ic.getWidth(), ic.getHeight() }, phi);
-			System.out.println(res);
 
-			for (int i = 0; i < res.length; i++) {
-				String line = "";
-				for (int j = 0; j < res[0].length; j++) {
-					line += res[i][j];
-				}
-				System.out.println(line);
-			}
+			scheduler.getImageFileProcessor().saveImageChunk(res, ic);
 
 		} catch (Exception e) {
 			// TODO: handle exception

@@ -20,5 +20,4 @@ public interface IMatrixOperations extends Remote{
 
     public double[][] matrixMultiplication(double[][] matrix, double[][] matrix2) throws RemoteException;
 
-    public void writeImageChunk(String sourcePath, String destPath, ImageChunk chunk, int[][] points)  throws RemoteException;;
 }

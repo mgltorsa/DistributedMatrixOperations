@@ -1,7 +1,9 @@
 package co.edu.icesi;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.PriorityQueue;
 
 import co.edu.icesi.interfaces.IBroker;
@@ -25,6 +27,8 @@ public class Broker implements IBroker {
 		}
 	});
 
+	private static List<Service> tiffProcessors = new ArrayList<Service>();
+
 	@Override
 	public void register(String ip, int port, String service) throws IllegalArgumentException {
 
@@ -37,31 +41,25 @@ public class Broker implements IBroker {
 
 		Service objService = new Service(ip, port);
 		ipsByService.put(ip, objService);
-		priorityQueue.add(objService);
 
-		//notify();
+		if(service.equals("operations")){
+			priorityQueue.add(objService);
+		}else{
+			tiffProcessors.add(objService);
+		}
 
 	}
 
 	@Override
 	public String getMultiplicationService() throws IllegalArgumentException {
 
-		// while (priorityQueue.isEmpty()) {
-		// 	try {
-		// 		wait();
-		// 	} catch (InterruptedException e) {
-		// 		// TODO Auto-generated catch block
-		// 		e.printStackTrace();
-		// 	}
-		// }
-		// synchronized (this){
+
 			Service objService=priorityQueue.poll();
 			int work = objService.getWork()+1;
 			objService.setWork(work);
 			priorityQueue.add(objService);
 			ipsByService.get(objService.getIp()).setWork(work);
 			return objService.getIp()+":"+objService.getPort();
-		// }
 
 	}
 
@@ -76,6 +74,13 @@ public class Broker implements IBroker {
 		priorityQueue.add(service);
 		// notify();		
 		// }
+	}
+
+	@Override
+	public String[] getTiffProcessors() throws IllegalArgumentException {
+		
+		String[] processors = new String[tiffProcessors.size()];
+		return tiffProcessors.toArray(processors);
 	}
 
 	

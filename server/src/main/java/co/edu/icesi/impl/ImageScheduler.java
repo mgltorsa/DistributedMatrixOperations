@@ -26,26 +26,30 @@ public class ImageScheduler{
 		imageProcessor = new ImageProcessor(tiffProcessor);
 	}
 
-	public void sendImageChunkForRotation() {
-		imageProcessor.setImageSource("./data/source/image.jpg");
-		imageProcessor.setImageDestination("./data/dest/image.jpg");
-		imageProcessor.splitImage(1000,1000);
+	// public void sendImageChunkForRotation() {
+	// 	imageProcessor.setImageSource("./data/source/image.jpg");
+	// 	imageProcessor.setImageDestination("./data/dest/image.jpg");
+	// 	imageProcessor.splitImage(1000,1000);
 
-		ImageChunk ic = imageProcessor.retriveImageChunk();
-		int[] init = {0,0};
-		int[] fin = {ic.getWidth(), ic.getHeight()};
-		int[][] pointsChunk = server.rotate(init, fin);
+	// 	ImageChunk ic = imageProcessor.retriveImageChunk();
+	// 	int[] init = {0,0};
+	// 	int[] fin = {ic.getWidth(), ic.getHeight()};
+	// 	int[][] pointsChunk = server.rotate(init, fin);
 
-		System.out.println(pointsChunk);
-		imageProcessor.setPoints(ic.getType(), pointsChunk);
-		ArrayList<ImageChunk> images = imageProcessor.getImageChunks(ic.getType());
-		schedule.addAll(images);
-	}
+	// 	System.out.println(pointsChunk);
+	// 	imageProcessor.setPoints(ic.getType(), pointsChunk);
+	// 	ArrayList<ImageChunk> images = imageProcessor.getImageChunks(ic.getType());
+	// 	schedule.addAll(images);
+	// }
 	
 	
 
 	public ImageProcessor getImageProcessor() {
 		return imageProcessor;
+	}
+
+	public IImageFileProcessor getImageFileProcessor() {
+		return tiffProcessor;
 	}
 
 	public void setImageProcessor(ImageProcessor imageProcessor) {
@@ -56,9 +60,9 @@ public class ImageScheduler{
 		
 	}
 
-	public void test(){
-		sendImageChunkForRotation();
-	}
+	// public void test(){
+	// 	sendImageChunkForRotation();
+	// }
 
 	public void setImageSource(String sourcePath) {
 		// TODO Auto-generated method stub

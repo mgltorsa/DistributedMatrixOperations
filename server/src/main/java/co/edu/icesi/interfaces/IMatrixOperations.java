@@ -15,6 +15,4 @@ public interface IMatrixOperations extends Remote{
     public int[][] rotatePointsInRegion(int[] initPoint, int[] lastPoint, double phi) throws RemoteException;
 
     public double[][] matrixMultiplication(double[][] matrix, double[][] matrix2) throws RemoteException;
-
-    public double[][] matrixMultiplication(double[] vector, double[][] matrix) throws RemoteException;
 }

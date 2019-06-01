@@ -13,7 +13,7 @@ public class Client implements Runnable{
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		server.recieve("./data/source/image.jpg", "Hola", Double.parseDouble("30"));
+		server.recieve("./data/source/img.jpg", "./data/dest/img.jpg", 45d);
 	}
 
 	@Reference(name="server")

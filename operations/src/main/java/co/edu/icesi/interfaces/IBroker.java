@@ -12,4 +12,6 @@ public interface IBroker {
     
     public void notifyByService(String ip);
 
+    public String[] getTiffProcessors() throws IllegalArgumentException;
+
 }

@@ -8,5 +8,8 @@ public interface IBroker{
 	public String getMultiplicationService() throws IllegalArgumentException;
 
 	public void notifyByService(String ip);
+	
+	public String[] getTiffProcessors() throws IllegalArgumentException;
+
 
 }

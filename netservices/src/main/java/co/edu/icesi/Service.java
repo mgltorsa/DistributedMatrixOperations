@@ -49,6 +49,11 @@ public class Service {
             return this.ip.equals(objService.ip);
         }
     }
+
+    @Override
+    public String toString() {
+        return ip+":"+port;
+    }
     
     
 }

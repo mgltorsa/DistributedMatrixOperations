@@ -1,4 +1,5 @@
 package co.edu.icesi.impl;
+import java.awt.HeadlessException;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -87,25 +88,36 @@ public class TiffProcessor implements IImageFileProcessor {
 			// Original starting point in the whole image
 			int originalX = (int) (imageChunk.getPoint().getX() * imageChunk.getWidth());
 			int originalY = (int) (imageChunk.getPoint().getY() * imageChunk.getHeight());
+
+			System.out.println("Original x "+  originalX);
+			System.out.println("Original y " + originalY);
+
+			System.out.println("Original width "+ width);
+			System.out.println("Original height" + height);
 	
 			// Original top-left point rotated
-			int localDeltaX = points[0][imageChunk.getWidth() - 1];
-			int localDeltaY = points[1][imageChunk.getWidth() - 1];
+			int localDeltaX = points[0][imageChunk.getWidth() ];
+			int localDeltaY = points[1][imageChunk.getWidth() ];
 	
 			System.out.println(localDeltaX);
 			System.out.println(localDeltaY);
 	
-			// Chunk corner points rotated
+			// Chunk corner points rotated|
 			int xleft = 0, xright = 0, ytop = 0, ybottom = 0;
 	
 			xleft = points[0][lastIndex];
-			xright = points[1][lastIndex];
-			ybottom = points[0][lastIndex + 1];
+			xright = points[0][lastIndex+1];
+			ybottom = points[1][lastIndex];
 			ytop = points[1][lastIndex + 1];
 	
 			// Require size to contain the chunk rotated without losing bytes
 			int deltaWidth = Math.abs(xleft - xright) + 1, deltaHeight = Math.abs(ytop - ybottom) + 1;
-	
+
+			System.out.println("Delta width " + deltaWidth);
+			System.out.println("Delta height" + deltaHeight);
+
+			System.out.println(xleft);
+			System.out.println(ybottom);
 			// -------------------------------------------------------------
 			// Original image information
 			// -------------------------------------------------------------
@@ -127,21 +139,24 @@ public class TiffProcessor implements IImageFileProcessor {
 			// New image to save the rotated chunk image
 	//		BufferedImage originalChunk = imageChunk(originalX, originalY, height, width, destinationPath);
 			BufferedImage bi = new BufferedImage(deltaWidth, deltaHeight, BufferedImage.TYPE_INT_RGB);
-			
-			int[][] newImage = new int[deltaWidth][deltaHeight];
-	
+				
 			for (int i = 0; i < lastIndex; i++) {
 	//			int oldPoint = originalChunk.getRGB(points[0][i], points[1][i]);
 	
 				int newX = points[0][i] - (xleft < 0 ? xleft : 0);
 				int newY = points[1][i] - (ybottom < 0 ? ybottom : 0);
-	
+
+				// System.out.println("x: "+newX);
+				// System.out.println("y: " + newX);
+
 				double w = imageChunk.getWidth();
 				int x = i%imageChunk.getWidth();
 				int y = (int) ((i/w)%imageChunk.getHeight());
 				
 				bi.setRGB(newX, newY, originalChunk.getRGB(x, y));
 			}
+
+			writeImageChunk(bi);
 		}
 
 	@Override
@@ -160,6 +175,8 @@ public class TiffProcessor implements IImageFileProcessor {
 			IIOImage image = new IIOImage(bufferChunk, null, null);
 			
 			writer.write(null, image, param);
+			writer.dispose();
+
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

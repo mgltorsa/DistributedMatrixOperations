@@ -49,27 +49,26 @@ public class ImageProcessor implements IImageLogicProcessor{
 
     @Override
     public void splitImage(int chunkWidth, int chunkHeight) {
-        imageFileProcessor.setImageProperties();
         double height = chunkHeight;
         double width = chunkWidth;
-        int widthPieces = (int) Math.ceil(imageFileProcessor.getImageWidth() / width)-1;
-        int heightPieces = (int) Math.ceil(imageFileProcessor.getImageHeight() / height)-1;
+        int widthPieces = (int) Math.ceil(imageFileProcessor.getImageWidth() / width);
+        int heightPieces = (int) Math.ceil(imageFileProcessor.getImageHeight() / height);
         
         boolean type = false;
 
-        for(int i = 0; i <= widthPieces; i++){
-            for(int j = 0; j<= heightPieces; j++){
+        for(int i = 0; i < widthPieces; i++){
+            for(int j = 0; j< heightPieces; j++){
                 ImageChunk ic = new ImageChunk();
                 ic.setPoint(new Point(i, j));
                 ic.setHeight(chunkHeight);
                 ic.setWidth(chunkWidth);
                 
-                if(i == widthPieces){
+                if(i == widthPieces-1){
                 	int mod = imageFileProcessor.getImageWidth()%chunkWidth;
                 	ic.setWidth(mod == 0?chunkWidth: mod);
                 	ic.setType(ImageChunk.FULL_HEIGHT);
                 	type = true;
-                }if(j == heightPieces){
+                }if(j == heightPieces-1){
                 	int mod = imageFileProcessor.getImageHeight()%chunkHeight;
                 	ic.setWidth(mod == 0?chunkHeight: mod);
                 	if(type)
@@ -77,26 +76,49 @@ public class ImageProcessor implements IImageLogicProcessor{
                 	else
                 		ic.setType(ImageChunk.FULL_WIDTH);
                 }
-                
                 type = false;
                 imageChunks.put(ic.getPoint(), ic);
-
             }
         }
     }
 
     @Override
     public void splitImage() {
-        splitImage(ImageChunk.DEFAUL_SIZE, ImageChunk.DEFAUL_SIZE);
+        if(imageFileProcessor.getImageHeight()<= 10000 && imageFileProcessor.getImageWidth()<=10000){
+            ImageChunk ic = new ImageChunk();
+            ic.setPoint(new Point(0, 0));
+            ic.setHeight(imageFileProcessor.getImageHeight());
+            ic.setWidth(imageFileProcessor.getImageWidth());
+            ic.setType(ImageChunk.FULL_ABSOLUTE);
+            imageChunks.put(ic.getPoint(), ic);
+        }else{
+            splitImage(ImageChunk.DEFAUL_SIZE, ImageChunk.DEFAUL_SIZE);
+        }
+
     }
 
     @Override
     public ImageChunk retriveImageChunk() {
-    	Iterator<Point> iterator = imageChunks.keySet().iterator();
-        if(iterator.hasNext())
-            return imageChunks.get(iterator.next());
+        Iterator<Point> iterator = imageChunks.keySet().iterator();
+        if(iterator.hasNext()){
+             
+           return imageChunks.get(iterator.next());
+        }
         else
             return null;    
+    }
+
+    public ImageChunk retriveImageChunk(int type) {
+        Iterator<Point> iterator = imageChunks.keySet().iterator();
+        ImageChunk ic = new ImageChunk();
+        while(iterator.hasNext()){
+            ImageChunk i = imageChunks.get(iterator.next());
+            if(i.getType()==type){
+                ic = i;
+                break;
+            }
+        }   
+        return ic; 
     }
 
 	@Override

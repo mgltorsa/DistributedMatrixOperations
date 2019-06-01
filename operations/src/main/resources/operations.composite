@@ -10,15 +10,20 @@
 			serviceName="operations" port="5100" />
 	</service>
 
-	<service name="r" promote="matrixOperationsRegister/r">
+	<service name="r" promote="Register/r">
 
+	</service>
+
+	<service name="s" promote="imageOperations/tiffProcessor">
+		<frascati:binding.rmi host="localhost"
+			serviceName="operations" port="5099" />
 	</service>
 
 	<component name="operations">
 
 		<service name="operations">
 			<interface.java
-				interface="co.edu.icesi.interfaces.IMatrixOperations" />
+				interface="co.edu.icesi.interfaces.IMatrixOperations"/>
 		</service>
 
 		<implementation.java
@@ -26,12 +31,22 @@
 
 	</component>
 
+	<component name="imageOperations">
+		<service name="tiffProcessor">
+			<interface.java
+				interface="co.edu.icesi.interfaces.IImageFileProcessor" />
+		</service>
+
+		<implementation.java
+			class="co.edu.icesi.impl.TiffProcessor" />
+	</component>
+
 	<component name="vectorOperations">
 		<implementation.java
 			class="co.edu.icesi.vectors.VectorOperations" />
 	</component>
 
-	<component name="matrixOperationsRegister">
+	<component name="Register">
 
 		<service name="r">
 			<interface.java interface="java.lang.Runnable" />
@@ -42,10 +57,13 @@
 			<interface.java
 				interface="co.edu.icesi.interfaces.IBroker" />
 		</reference>
-		<property name="port">5100</property>
-		<property name="serviceName">operations</property>
+		<property name="portMatrix">5100</property>
+		<property name="portTiff">5099</property>
+		<property name="matrixServiceName">operations</property>
+		<property name="tiffServiceName">tiff</property>
+
 		<implementation.java
-			class="co.edu.icesi.MatrixOperationsRegister" />
+			class="co.edu.icesi.Register" />
 	</component>
 
 	<wire source="operations/vectorOperations"
