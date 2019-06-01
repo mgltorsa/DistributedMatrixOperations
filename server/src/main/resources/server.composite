@@ -6,11 +6,15 @@
   name="ServerRMI">
 
   <service name="r" promote="server/r">
+   <interface.java interface="java.lang.Runnable" />
   </service>
+
+   <service name="server"  promote="server/s">
+      <interface.java interface="co.edu.icesi.interfaces.IServer" />      
+  	</service>
 
   <component name="server">
 
-  	
   	<reference name="broker">
       <frascati:binding.rmi host="localhost" serviceName="redirecting" port="5555"/>
       <interface.java interface="co.edu.icesi.interfaces.IBroker"/>
@@ -20,7 +24,7 @@
       <interface.java interface="java.lang.Runnable" />
     </service>
   	
-	  <service name="s">
+	  <service name="server" >
       <frascati:binding.rmi host="localhost" serviceName="server" port="5001"/>
       <interface.java interface="co.edu.icesi.interfaces.IServer" />      
   	</service>
