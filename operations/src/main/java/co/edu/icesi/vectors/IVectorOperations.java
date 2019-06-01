@@ -8,7 +8,7 @@ import org.osoa.sca.annotations.Service;
 @Service
 public interface IVectorOperations {
 
-    public double[] dotProduct(double[] vector1, double[] vector2);
+    public double dotProduct(double[] vector1, double[] vector2);
 
 
 }

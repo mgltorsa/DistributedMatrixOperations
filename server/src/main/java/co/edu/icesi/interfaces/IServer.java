@@ -1,11 +1,12 @@
 package co.edu.icesi.interfaces;
 
-import java.awt.Point;
 
 import org.osoa.sca.annotations.Service;
 
 @Service
 public interface IServer {
 
-    public int[][] rotate(Point init, Point last) ;
+    public int[][] rotate(int[] initPoint, int[] lastPoint);
+
+    public int[][] rotate(int[] initPoint, int[] lastPoint, int[] middlePoint);
 }

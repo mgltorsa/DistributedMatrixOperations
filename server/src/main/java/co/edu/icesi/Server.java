@@ -10,7 +10,7 @@ import java.util.List;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
-import co.edu.icesi.interfaces.IBroker;
+import co.edu.icesi.interfaces.IBalancer;
 import co.edu.icesi.interfaces.IMatrixOperations;
 import co.edu.icesi.interfaces.IServer;
 
@@ -20,7 +20,7 @@ import co.edu.icesi.interfaces.IServer;
 public class Server implements IServer {
 
 	
-	private IBroker broker;
+	private IBalancer broker;
     
     @Property
 	private String service;
@@ -29,14 +29,21 @@ public class Server implements IServer {
 
 
     @Reference(name="broker")
-    public void setBroker(IBroker broker) {
+    public void setBroker(IBalancer broker) {
     	this.broker=broker;
     }
-    
-    @Override
-    public int[][] rotate(Point init, Point last){
 
-		return new int[2][2];
-	}
+    @Override
+    public int[][] rotate(int[] initPoint, int[] lastPoint) {
+        
+        return null;
+    }
+
+    @Override
+    public int[][] rotate(int[] initPoint, int[] lastPoint, int[] middlePoint) {
+        return null;
+    }
+    
+    
 
 }
