@@ -1,4 +1,4 @@
-fras compile src/main/java operations
-fras run src/main/resources/operations -libpath operations.jar
+frascati compile src/main/java operations
+frascati run src/main/resources/operations -libpath operations.jar
 
 //fras run src/main/resources/operations -libpath operations.jar -s r -m run
