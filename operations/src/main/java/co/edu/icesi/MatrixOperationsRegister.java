@@ -26,7 +26,6 @@ public class MatrixOperationsRegister implements Runnable {
 	public void setBalancer(IBroker broker) {
 
 		this.broker = broker;
-		
 
 	}	
 

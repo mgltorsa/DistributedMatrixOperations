@@ -11,11 +11,11 @@
 
   <component name="client">
  
-		<reference name="server">
+	<reference name="server">
       <frascati:binding.rmi host="localhost" serviceName="server" port="5001"/>
       <interface.java interface="co.edu.icesi.interfaces.IServer" />      
   	</reference>
-    <implementation.java class="co.edu.icesi.impl.ImageScheduler"/>
+    <implementation.java class="co.edu.icesi.impl.Client"/>
  
   </component>	
 

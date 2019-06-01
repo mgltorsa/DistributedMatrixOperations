@@ -6,6 +6,7 @@ import java.rmi.server.UnicastRemoteObject;
 
 import org.osoa.sca.annotations.Reference;
 
+import co.edu.icesi.impl.ImageChunk;
 import co.edu.icesi.interfaces.IMatrixOperations;
 import co.edu.icesi.vectors.IVectorOperations;
 
@@ -111,6 +112,12 @@ public class MatrixOperations extends UnicastRemoteObject implements IMatrixOper
 		return new double[][] {{cosPhi, -sinPhi},
             {sinPhi, cosPhi}};       
     }
+
+	@Override
+	public void writeImageChunk(String sourcePath, String destPath, ImageChunk chunk, int[][] points) {
+		// TODO Auto-generated method stub
+		
+	}
 
     
 

@@ -1,45 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-  xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1"
-  targetNamespace="http://frascati.ow2.org/helloworld-rmi"
-  name="OperationsRMI">
+	xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1"
+	targetNamespace="http://frascati.ow2.org/helloworld-rmi"
+	name="OperationsRMI">
 
-  <service name="ops" promote="operations/operations">
-      <frascati:binding.rmi host="localhost" serviceName="operations" port="5100"/>
-  </service>
+	<service name="ops" promote="operations/operations">
+		<frascati:binding.rmi host="localhost"
+			serviceName="operations" port="5100" />
+	</service>
 
-  <service name="r" promote="matrixOperationsRegister/r">
-  </service>
+	<service name="r" promote="matrixOperationsRegister/r">
 
-  <component name="operations">
- 
-    <service name="operations">
-      <interface.java interface="co.edu.icesi.interfaces.IMatrixOperations" />
-    </service> 
-    
-    <implementation.java class="co.edu.icesi.MatrixOperations" />
- 
-  </component>
+	</service>
 
-  <component name="vectorOperations">
-    <implementation.java class="co.edu.icesi.vectors.VectorOperations"/>
-  </component>
+	<component name="operations">
 
-  <component name="matrixOperationsRegister">
+		<service name="operations">
+			<interface.java
+				interface="co.edu.icesi.interfaces.IMatrixOperations" />
+		</service>
 
- |<service name="r">
-    <interface.java interface="java.lang.Runnable"/>
-  </service>
- 	<reference name="broker">
- 		<frascati:binding.rmi host="192.168.161.24" serviceName="redirecting" port="5555"/>
- 		<interface.java interface="co.edu.icesi.interfaces.IBroker" />
- 	</reference>
-    <property name="port">5100</property>
-    <property name="serviceName">operations</property>
-    <implementation.java class="co.edu.icesi.MatrixOperationsRegister" /> 
-  </component>
- 
-  <wire source="operations/vectorOperations" target="vectorOperations/IVectorOperations" />
+		<implementation.java
+			class="co.edu.icesi.MatrixOperations" />
+
+	</component>
+
+	<component name="vectorOperations">
+		<implementation.java
+			class="co.edu.icesi.vectors.VectorOperations" />
+	</component>
+
+	<component name="matrixOperationsRegister">
+
+		<service name="r">
+			<interface.java interface="java.lang.Runnable" />
+		</service>
+		<reference name="broker">
+			<frascati:binding.rmi host="192.168.161.24"
+				serviceName="redirecting" port="5555" />
+			<interface.java
+				interface="co.edu.icesi.interfaces.IBroker" />
+		</reference>
+		<property name="port">5100</property>
+		<property name="serviceName">operations</property>
+		<implementation.java
+			class="co.edu.icesi.MatrixOperationsRegister" />
+	</component>
+
+	<wire source="operations/vectorOperations"
+		target="vectorOperations/IVectorOperations" />
 
 </composite>

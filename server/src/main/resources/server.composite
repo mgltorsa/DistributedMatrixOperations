@@ -9,7 +9,7 @@
    <interface.java interface="java.lang.Runnable" />
   </service>
 
-   <service name="server"  promote="server/s">
+   <service name="s"  promote="server/s">
       <interface.java interface="co.edu.icesi.interfaces.IServer" />      
   	</service>
 
@@ -24,7 +24,7 @@
       <interface.java interface="java.lang.Runnable" />
     </service>
   	
-	  <service name="server" >
+	<service name="s" >
       <frascati:binding.rmi host="localhost" serviceName="server" port="5001"/>
       <interface.java interface="co.edu.icesi.interfaces.IServer" />      
   	</service>

@@ -12,5 +12,4 @@ public interface IBroker{
 
 	public void notifyByService(String ip);
 
-
 }
