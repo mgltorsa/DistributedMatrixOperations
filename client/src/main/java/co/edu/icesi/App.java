@@ -1,20 +1,20 @@
 package co.edu.icesi;
 
-import co.edu.icesi.implementation.ImageChunk;
-import co.edu.icesi.implementation.ImageProcessor;
+import co.edu.icesi.impl.image.ImageChunk;
+import co.edu.icesi.impl.image.ImageProcessor;
 
 public class App {
 
 	public static void main(String[] args) {
-		double sin = Math.sin(2*(Math.PI / 3.0));
-		double cos = Math.cos(2*(Math.PI / 3.0));
+		double sin = Math.sin((Math.PI / 3.0));
+		double cos = Math.cos((Math.PI / 3.0));
 
 		ImageProcessor ip = new ImageProcessor();
 
-		ip.setImageDestination("./data/dest/image.jpg");
+		ip.setImageDestination("./data/dest/test3.jpg");
 		ip.setImageSource("./data/source/image.jpg");
 
-		ip.splitImage(20,20);
+		ip.splitImage(4320,4320);
 
 		ImageChunk ic = ip.getRemainingImageChunk();
 

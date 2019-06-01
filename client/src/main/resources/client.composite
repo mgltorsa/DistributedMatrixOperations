@@ -5,13 +5,17 @@
   targetNamespace="http://frascati.ow2.org/helloworld-rmi"
   name="OperationsRMI">
 
-  <service name="r" promote="client/Runnable">
+  <service name="rotate" promote="client/Runnable">
   </service>
 
   <component name="client">
  
-    <implementation.java class="co.edu.icesi.AppClient" />
+		<reference name="server">
+      		<frascati:binding.rmi host="localhost" serviceName="server" port="5001"/>
+      		<interface.java interface="co.edu.icesi.interfaces.IServer" />      
+  		</reference>
+    <implementation.java class="co.edu.icesi.imp.connection.Client" />
  
-  </component> 
+  </component>	
 
 </composite>
