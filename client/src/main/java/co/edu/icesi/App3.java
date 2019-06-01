@@ -1,44 +1,35 @@
 package co.edu.icesi;
 
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
-import java.util.Iterator;
 
-import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
-import javax.imageio.ImageTypeSpecifier;
-import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageReadParam;
+import javax.imageio.ImageReader;
 import javax.imageio.ImageWriter;
-import javax.imageio.stream.FileImageOutputStream;
-import javax.imageio.stream.ImageOutputStream;
+import javax.imageio.stream.ImageInputStream;
 
 public class App3 {
-	public static void main(String[] args) throws IOException {
-		
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("tif");
-		ImageWriter writer = writers.next();
-		ImageWriteParam param = writer.getDefaultWriteParam();
-		param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-//		param.setCompressionQuality(scale);
-		ImageOutputStream ios = ImageIO.createImageOutputStream(baos);
-		writer.setOutput(ios);
+	
+	public static void main(String[] args) {
+		try {
+			File image = new File("./data/source/image.jpg");
+			ImageInputStream iis = ImageIO.createImageInputStream(image);
 
-		File f = new File("./data/dest/image.jpg");
-		FileImageOutputStream output = new FileImageOutputStream(f);
+			ImageReader r = ImageIO.getImageReaders(iis).next();
+			ImageWriter w = ImageIO.getImageWriter(r);
 
-		BufferedImage bf = new BufferedImage(200, 200, BufferedImage.TYPE_INT_RGB);
-		IIOImage image = new IIOImage(bf, null, null);
-		writer.prepareInsertEmpty(0, ImageTypeSpecifier., width, height, imageMetadata, thumbnails, param);
-		System.out.println(writer.canInsertImage(0));
-//		writer.write(null, new IIOImage(bf, null, null), param);
-//		writer.write(null, image, param);
-		writer.dispose();
-		ios.close();
-		baos.close();
-//		return data;
-		
+			r.setInput(iis);
+
+			ImageReadParam param = r.getDefaultReadParam();
+			param.setSourceRegion(new Rectangle(0, 0, ic.getHeight(), ic.getWidth()));
+			BufferedImage bi = r.read(0, param);
+			
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
+
 }

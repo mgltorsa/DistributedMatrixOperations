@@ -5,9 +5,7 @@ import java.util.List;
 
 import co.edu.icesi.impl.image.ImageChunk;
 
-public interface IImageProcessor {
-	
-	public ImageChunk getRemainingImageChunk();
+public interface IImageLogicProcessor {
 	
 	public ArrayList<ImageChunk> getImageChunks(int type);
 	

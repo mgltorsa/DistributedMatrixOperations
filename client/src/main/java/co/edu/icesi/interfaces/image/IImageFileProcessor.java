@@ -12,8 +12,8 @@ public interface IImageFileProcessor {
 
 	public void saveImageChunk(int[][] points, ImageChunk imageChunk);
 	
-	public void defineImageCut();
-
+	public void writeImageChunk(BufferedImage bufferChunk);
+	
 	public void setImageProperties();
 
 	public void setSourcePath(String source);
@@ -23,4 +23,5 @@ public interface IImageFileProcessor {
 	public int getImageHeight();
 
 	public int getImageWidth();
+	
 }

@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Queue;
 
 import co.edu.icesi.interfaces.image.IImageFileProcessor;
-import co.edu.icesi.interfaces.image.IImageProcessor;
+import co.edu.icesi.interfaces.image.IImageLogicProcessor;
 
-public class ImageProcessor implements IImageProcessor{
+public class ImageProcessor implements IImageLogicProcessor{
 	
     private HashMap<Point, ImageChunk> imageChunks;
     
@@ -35,15 +35,6 @@ public class ImageProcessor implements IImageProcessor{
         imageFileProcessor.setDestinationPath(dest);
     }
 
-    @Override
-    public ImageChunk getRemainingImageChunk() {
-        Iterator<Point> iterator = imageChunks.keySet().iterator();
-        if(iterator.hasNext())
-            return imageChunks.get(iterator.next());
-        else
-            return null;    
-    }
-    
     @Override
     public ArrayList<ImageChunk> getImageChunks(int type){
     	Iterator<Point> iter = imageChunks.keySet().iterator();
@@ -102,7 +93,11 @@ public class ImageProcessor implements IImageProcessor{
 
     @Override
     public ImageChunk retriveImageChunk() {
-        return null;
+    	Iterator<Point> iterator = imageChunks.keySet().iterator();
+        if(iterator.hasNext())
+            return imageChunks.get(iterator.next());
+        else
+            return null;    
     }
 
     @Override

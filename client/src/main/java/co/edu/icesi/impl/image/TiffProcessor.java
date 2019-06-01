@@ -76,6 +76,103 @@ public class TiffProcessor implements IImageFileProcessor {
 	}
 
 	@Override
+		public void saveImageChunk(int[][] points, ImageChunk imageChunk) {
+	
+			// Last index in the arrays of points
+			int lastIndex = imageChunk.getHeight() * imageChunk.getWidth();
+	
+			// -------------------------------------------------------------
+			// Image chunk information
+			// -------------------------------------------------------------
+			int height = imageChunk.getHeight();
+			int width = imageChunk.getWidth();
+	
+			// Original starting point in the whole image
+			int originalX = (int) (imageChunk.getPoint().getX() * imageChunk.getWidth());
+			int originalY = (int) (imageChunk.getPoint().getY() * imageChunk.getHeight());
+	
+			// Original top-left point rotated
+			int localDeltaX = points[0][imageChunk.getWidth() - 1];
+			int localDeltaY = points[1][imageChunk.getWidth() - 1];
+	
+			System.out.println(localDeltaX);
+			System.out.println(localDeltaY);
+	
+			// Chunk corner points rotated
+			int xleft = 0, xright = 0, ytop = 0, ybottom = 0;
+	
+			xleft = points[0][lastIndex];
+			xright = points[1][lastIndex];
+			ybottom = points[0][lastIndex + 1];
+			ytop = points[1][lastIndex + 1];
+	
+			// Require size to contain the chunk rotated without losing bytes
+			int deltaWidth = Math.abs(xleft - xright) + 1, deltaHeight = Math.abs(ytop - ybottom) + 1;
+	
+			// -------------------------------------------------------------
+			// Original image information
+			// -------------------------------------------------------------
+	
+			// Image corner points rotated
+			int imageTopY = 0, imageBottomY = 0, imageLetfX = 0, imageRightX = 0;
+	
+			int fitBufferX = imageTopY;
+			int fitBufferY = imageLetfX;
+	
+			int leftX = (int) Math.min(0, Math.min(topRight.getX(), Math.min(bottomRight.getX(), bottomLeft.getX())));
+			int rightX = (int) Math.max(0, Math.max(topRight.getX(), Math.max(bottomRight.getX(), bottomLeft.getX())));
+			int bottomY = (int) Math.min(0, Math.min(topRight.getY(), Math.min(bottomRight.getY(), bottomLeft.getY())));
+			int topY = (int) Math.max(0, Math.max(topRight.getY(), Math.max(bottomRight.getY(), bottomLeft.getY())));
+	
+			// Original image chunk
+			BufferedImage originalChunk = imageChunk(originalX, originalY, height, width, sourcePath);
+	
+			// New image to save the rotated chunk image
+	//		BufferedImage originalChunk = imageChunk(originalX, originalY, height, width, destinationPath);
+			BufferedImage bi = new BufferedImage(deltaWidth, deltaHeight, BufferedImage.TYPE_INT_RGB);
+			
+			int[][] newImage = new int[deltaWidth][deltaHeight];
+	
+			for (int i = 0; i < lastIndex; i++) {
+	//			int oldPoint = originalChunk.getRGB(points[0][i], points[1][i]);
+	
+				int newX = points[0][i] - (xleft < 0 ? xleft : 0);
+				int newY = points[1][i] - (ybottom < 0 ? ybottom : 0);
+	
+				double w = imageChunk.getWidth();
+				int x = i%imageChunk.getWidth();
+				int y = (int) ((i/w)%imageChunk.getHeight());
+				
+				bi.setRGB(newX, newY, originalChunk.getRGB(x, y));
+			}
+		}
+
+	@Override
+	public void writeImageChunk(BufferedImage bufferChunk) {
+		// TODO Auto-generated method stub
+		try {
+			File f = new  File(destinationPath);
+			FileImageOutputStream output = new FileImageOutputStream(f);
+			
+			Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
+			ImageWriter writer = writers.next();
+			ImageWriteParam param = writer.getDefaultWriteParam();
+			
+			writer.setOutput(output);
+			param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+			IIOImage image = new IIOImage(bufferChunk, null, null);
+			
+			writer.write(null, image, param);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Override
 	public void setImageProperties() {
 		try {
 			File image = new File(sourcePath);
@@ -111,12 +208,27 @@ public class TiffProcessor implements IImageFileProcessor {
 
 	}
 
-	public String getSourcePath() {
-		return sourcePath;
-	}
-
 	public void setSourcePath(String sourcePath) {
 		this.sourcePath = sourcePath;
+	}
+
+	@Override
+	public void setDestinationPath(String destinationPath) {
+		this.destinationPath = destinationPath;
+	}
+
+	@Override
+	public int getImageHeight() {
+		return height;
+	}
+
+	@Override
+	public int getImageWidth() {
+		return width;
+	}
+
+	public String getSourcePath() {
+		return sourcePath;
 	}
 
 	public int getWidth() {
@@ -137,131 +249,6 @@ public class TiffProcessor implements IImageFileProcessor {
 
 	public String getDestinationPath() {
 		return destinationPath;
-	}
-
-	@Override
-	public void setDestinationPath(String destinationPath) {
-		this.destinationPath = destinationPath;
-	}
-
-	@Override
-	public int getImageHeight() {
-		return height;
-	}
-
-	@Override
-	public int getImageWidth() {
-		return width;
-	}
-
-	@Override
-	public void saveImageChunk(int[][] points, ImageChunk imageChunk) {
-
-		// Last index in the arrays of points
-		int lastIndex = imageChunk.getHeight() * imageChunk.getWidth();
-
-		// -------------------------------------------------------------
-		// Image chunk information
-		// -------------------------------------------------------------
-		int height = imageChunk.getHeight();
-		int width = imageChunk.getWidth();
-
-		// Original starting point in the whole image
-		int originalX = (int) (imageChunk.getPoint().getX() * imageChunk.getWidth());
-		int originalY = (int) (imageChunk.getPoint().getY() * imageChunk.getHeight());
-
-		// Original top-left point rotated
-		int localDeltaX = points[0][imageChunk.getWidth() - 1];
-		int localDeltaY = points[1][imageChunk.getWidth() - 1];
-
-		System.out.println(localDeltaX);
-		System.out.println(localDeltaY);
-
-		// Chunk corner points rotated
-		int xleft = 0, xright = 0, ytop = 0, ybottom = 0;
-
-		xleft = points[0][lastIndex];
-		xright = points[1][lastIndex];
-		ybottom = points[0][lastIndex + 1];
-		ytop = points[1][lastIndex + 1];
-
-		// Require size to contain the chunk rotated without losing bytes
-		int deltaWidth = Math.abs(xleft - xright) + 1, deltaHeight = Math.abs(ytop - ybottom) + 1;
-
-		// -------------------------------------------------------------
-		// Original image information
-		// -------------------------------------------------------------
-
-		// Image corner points rotated
-		int imageTopY = 0, imageBottomY = 0, imageLetfX = 0, imageRightX = 0;
-
-		int fitBufferX = imageTopY;
-		int fitBufferY = imageLetfX;
-
-		int leftX = (int) Math.min(0, Math.min(topRight.getX(), Math.min(bottomRight.getX(), bottomLeft.getX())));
-		int rightX = (int) Math.max(0, Math.max(topRight.getX(), Math.max(bottomRight.getX(), bottomLeft.getX())));
-		int bottomY = (int) Math.min(0, Math.min(topRight.getY(), Math.min(bottomRight.getY(), bottomLeft.getY())));
-		int topY = (int) Math.max(0, Math.max(topRight.getY(), Math.max(bottomRight.getY(), bottomLeft.getY())));
-
-		// Original image chunk
-		BufferedImage originalChunk = imageChunk(originalX, originalY, height, width, sourcePath);
-
-		// New image to save the rotated chunk image
-//		BufferedImage originalChunk = imageChunk(originalX, originalY, height, width, destinationPath);
-		BufferedImage bi = new BufferedImage(deltaWidth, deltaHeight, BufferedImage.TYPE_INT_RGB);
-		
-		int[][] newImage = new int[deltaWidth][deltaHeight];
-
-		for (int i = 0; i < lastIndex; i++) {
-//			int oldPoint = originalChunk.getRGB(points[0][i], points[1][i]);
-
-			int newX = points[0][i] - (xleft < 0 ? xleft : 0);
-			int newY = points[1][i] - (ybottom < 0 ? ybottom : 0);
-
-			double w = imageChunk.getWidth();
-			int x = i%imageChunk.getWidth();
-			int y = (int) ((i/w)%imageChunk.getHeight());
-			
-			newImage[newX][newY] = 1;
-			bi.setRGB(newX, newY, originalChunk.getRGB(x, y));
-		}
-		
-		File f = new File("./data/dest/test2.jpg");
-		try {
-			FileImageOutputStream output = new FileImageOutputStream(f);
-			
-			Iterator<ImageWriter> writers = ImageIO.getImageWritersByFormatName("jpg");
-			ImageWriter writer = writers.next();
-			ImageWriteParam param = writer.getDefaultWriteParam();
-			
-			writer.setOutput(output);
-			param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-			IIOImage image = new IIOImage(bi, null, null);
-			
-			writer.write(null, image, param);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-
-//		for (int m = 0; m < deltaWidth; m++) {
-//			String line = "";
-//			for (int k = 0; k < deltaWidth; k++) {
-//				line += newImage[m][k] + " ";
-//			}
-//			System.out.println(line);
-//		}
-
-	}
-
-	@Override
-	public void defineImageCut() {
-
 	}
 
 }

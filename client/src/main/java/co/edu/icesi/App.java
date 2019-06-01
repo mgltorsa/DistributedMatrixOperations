@@ -1,5 +1,14 @@
 package co.edu.icesi;
 
+import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
+import java.io.File;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReadParam;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
+
 import co.edu.icesi.impl.image.ImageChunk;
 import co.edu.icesi.impl.image.ImageProcessor;
 
@@ -15,8 +24,15 @@ public class App {
 		ip.setImageSource("./data/source/image.jpg");
 
 		ip.splitImage(4320,4320);
+		
+		ImageChunk ic = ip.retriveImageChunk();
+		//--------------------------------------------------------------------------------------------------------------
+		
+		try {
+			File image = new File("./data/source/image.jpg");
+		
+		//--------------------------------------------------------------------------------------------------------------
 
-		ImageChunk ic = ip.getRemainingImageChunk();
 
 		int mx = Integer.MAX_VALUE, Mx = Integer.MIN_VALUE, my = Integer.MAX_VALUE, My = Integer.MIN_VALUE;
 
@@ -36,7 +52,6 @@ public class App {
 			points[1][j] = yp;
 			
 			if(xp < mx) {
-//				System.out.println(mx);
 				mx = points[0][j];}
 			if(xp > Mx)
 				Mx = points[0][j];

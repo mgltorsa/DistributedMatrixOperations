@@ -9,13 +9,13 @@ import org.oasisopen.sca.annotation.Reference;
 
 import co.edu.icesi.interfaces.IServer;
 import co.edu.icesi.interfaces.image.IImageFileProcessor;
-import co.edu.icesi.interfaces.image.IImageProcessor;
+import co.edu.icesi.interfaces.image.IImageLogicProcessor;
 
 public class ImageScheduler implements Runnable{
 
 	private Queue<ImageChunk> schedule;
 
-	private IImageProcessor imageProcessor;
+	private IImageLogicProcessor imageProcessor;
 	
 	private IImageFileProcessor tiffProcessor;
 
@@ -30,7 +30,7 @@ public class ImageScheduler implements Runnable{
 	}
 
 	public void sendImageChunkForRotation() {
-		ImageChunk ic = imageProcessor.getRemainingImageChunk();
+		ImageChunk ic = imageProcessor.retriveImageChunk();
 		int[] init = {0,0};
 		int[] fin = {ic.getWidth(), ic.getHeight()};
 		int[][] pointsChunk = server.rotate(init, fin);
