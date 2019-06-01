@@ -26,12 +26,12 @@ public class Balancer implements IBalancer {
 	});
 
 	@Override
-	public void register(String protocol, String ip, int port, String service) throws IllegalArgumentException {
+	public void register(String ip, int port, String service) throws IllegalArgumentException {
 
-		if (service == null || ip == null || protocol == null) {
+		if (service == null || ip == null ) {
 			throw new IllegalArgumentException("values cannot be null");
 		}
-		if (service.isEmpty() || ip.isEmpty() || protocol.isEmpty()) {
+		if (service.isEmpty() || ip.isEmpty()) {
 			throw new IllegalArgumentException("values cannot be empty");
 		}
 
@@ -44,7 +44,7 @@ public class Balancer implements IBalancer {
 	}
 
 	@Override
-	public String getMultiplicationService(String service) throws IllegalArgumentException {
+	public String getMultiplicationService() throws IllegalArgumentException {
 
 		while (priorityQueue.isEmpty()) {
 			try {

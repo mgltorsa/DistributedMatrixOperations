@@ -41,7 +41,7 @@ public class MatrixOperationsRegister {
 		String ip = InetAddress.getLocalHost().getHostAddress();
 		System.out.println("Myip->"+ip);
 		System.out.println("service name->"+serviceName);
-		broker.register("rmi", ip, port, serviceName);
+		broker.register( ip, port, serviceName);
 	}
 	
 
