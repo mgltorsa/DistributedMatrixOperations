@@ -70,12 +70,14 @@ public class Balancer implements IBalancer {
 	@Override
 	public void notifyByService(String ip) {
 
+		synchronized (this){
 		Service service = ipsByService.get(ip);
 		priorityQueue.remove(service);
 		int work = service.getWork()-1;
 		service.setWork(work);
 		priorityQueue.add(service);
 		notify();		
+		}
 	}
 
 	
