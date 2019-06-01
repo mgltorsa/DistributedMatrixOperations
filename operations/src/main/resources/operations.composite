@@ -5,21 +5,16 @@
 	targetNamespace="http://frascati.ow2.org/helloworld-rmi"
 	name="OperationsRMI">
 
-	<service name="ops" promote="operations/operations">
-		<frascati:binding.rmi host="localhost"
-			serviceName="operations" port="5100" />
-	</service>
-
 	<service name="r" promote="Register/r">
 
 	</service>
 
 	<service name="s" promote="imageOperations/tiffProcessor">
 		<frascati:binding.rmi host="localhost"
-			serviceName="operations" port="5099" />
+			serviceName="tiff" port="5099" />
 	</service>
 
-	<component name="operations">
+	<component name="matrixOperations">
 
 		<service name="operations">
 			<interface.java
@@ -34,7 +29,7 @@
 	<component name="imageOperations">
 		<service name="tiffProcessor">
 			<interface.java
-				interface="co.edu.icesi.interfaces.IImageFileProcessor" />
+				interface="co.edu.icesi.interfaces.ITiffProcessor" />
 		</service>
 
 		<implementation.java
@@ -57,16 +52,17 @@
 			<interface.java
 				interface="co.edu.icesi.interfaces.IBroker" />
 		</reference>
-		<property name="portMatrix">5100</property>
+
 		<property name="portTiff">5099</property>
-		<property name="matrixServiceName">operations</property>
 		<property name="tiffServiceName">tiff</property>
 
 		<implementation.java
 			class="co.edu.icesi.Register" />
 	</component>
 
-	<wire source="operations/vectorOperations"
+	<wire source="matrixOperations/vectorOperations"
 		target="vectorOperations/IVectorOperations" />
+
+	<wire source="imageOperations/matrixOperations" target="matrixOperations/operations"/>
 
 </composite>

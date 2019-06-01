@@ -1,6 +1,7 @@
 package co.edu.icesi;
 
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -10,100 +11,104 @@ import java.util.List;
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
-import co.edu.icesi.impl.ImageChunk;
-import co.edu.icesi.impl.ImageScheduler;
 import co.edu.icesi.interfaces.IBroker;
-import co.edu.icesi.interfaces.IMatrixOperations;
 import co.edu.icesi.interfaces.IServer;
+import co.edu.icesi.interfaces.ITiffManager;
+import co.edu.icesi.interfaces.ITiffProcessor;
 
 /**
  * Server
  */
 public class Server implements IServer, Runnable {
 
-	private ImageScheduler scheduler;
 
 	private IBroker broker;
 
 	@Property
 	private String service;
 
-	private static IMatrixOperations operations;
+	@Reference
+	private ITiffManager tiffManager;
+
 
 	@Reference(name = "broker")
 	public void setBalancer(IBroker broker) {
 		this.broker = broker;
-		this.scheduler = new ImageScheduler();
 	}
 
 	@Override
 	public void run() {
-		runTest();
+		// runTest();
 	}
 
-	private void runTest() {
+	// private void runTest() {
 
-		String[] info = broker.getMultiplicationService().split(":");
-		String ip = info[0];
-		String port = info[1];
+	// 	String[] info = broker.getMultiplicationService().split(":");
+	// 	String ip = info[0];
+	// 	String port = info[1];
 
-		System.out.println(ip + ":" + port);
-		try {
-			operations = (IMatrixOperations) Naming.lookup("rmi://" + ip + ":" + port + "/" + service);
-			System.out.println(operations);
+	// 	System.out.println(ip + ":" + port);
+	// 	try {
+	// 		operations = (IMatrixOperations) Naming.lookup("rmi://" + ip + ":" + port + "/" + service);
+	// 		System.out.println(operations);
 
-			double cosPhi = Math.cos(Math.toRadians(45));
-			double sinPhi = Math.sin(Math.toRadians(45));
-			double[][] res = operations.matrixMultiplication(new double[][] {{cosPhi, -sinPhi},
-            {sinPhi, cosPhi}},
-					new double[][] { { 0 }, { 499 } });
-			System.out.println("Matrix: {");
-			for (int i = 0; i < res.length; i++) {
-				for (int j = 0; j < res[0].length; j++) {
-					System.out.print(res[i][j]+",");
-				}
-				System.out.println();
-			}
-			System.out.println("}");
+	// 		double cosPhi = Math.cos(Math.toRadians(45));
+	// 		double sinPhi = Math.sin(Math.toRadians(45));
+	// 		double[][] res = operations.matrixMultiplication(new double[][] {{cosPhi, -sinPhi},
+    //         {sinPhi, cosPhi}},
+	// 				new double[][] { { 0 }, { 499 } });
+	// 		System.out.println("Matrix: {");
+	// 		for (int i = 0; i < res.length; i++) {
+	// 			for (int j = 0; j < res[0].length; j++) {
+	// 				System.out.print(res[i][j]+",");
+	// 			}
+	// 			System.out.println();
+	// 		}
+	// 		System.out.println("}");
 
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}
-	}
+	// 	} catch (Exception e) {
+	// 		// TODO: handle exception
+	// 		e.printStackTrace();
+	// 	}
+	// }
 
 
 	@Override
-	public void recieve(String sourcePath, String destPath, Double phi) {
+	public void recieve(final String sourcePath, String destPath, final double phi) {
 		// TODO Auto-generated method stub
-		scheduler.setImageSource(sourcePath);
-		scheduler.setImageDestination(destPath);
-		scheduler.getImageFileProcessor().setImageProperties();
-		scheduler.getImageProcessor().splitImage();
+		int cores =  broker.getTotalProcessors();
+		List<Rectangle> rectangles =  tiffManager.calculateRegions(sourcePath, cores);
+		int rectanglesPerCore = rectangles.size()/cores;
+		final String[] processors = broker.getTiffProcessors(cores);
 
-		ImageChunk ic = scheduler.getImageProcessor().retriveImageChunk();
-
-		String[] info = broker.getMultiplicationService().split(":");
-		String ip = info[0];
-		String port = info[1];
-
-		System.out.println(ip + ":" + port);
-		System.out.println(ic.getHeight() + " " +ic.getWidth());
-		try {
-			operations = (IMatrixOperations) Naming.lookup("rmi://" + ip + ":" + port + "/" + service);
+		for (int i = 0; i < processors.length; i++) {
+			final Rectangle[] threadRectangles = new Rectangle[rectanglesPerCore];
+			rectangles.toArray(threadRectangles);
+			new Thread(new Runnable(){
 			
-			int[][] res = operations.rotatePointsInRegion(new int[] { 0, 0 },
-					new int[] { ic.getWidth(), ic.getHeight() }, phi);
+				@Override
+				public void run() {
+					for (int i = 0; i < threadRectangles.length; i++) {
+						try{
+							ITiffProcessor processor =  (ITiffProcessor) Naming.lookup("rmi://"+processors[i]+"/"+service);
+							Rectangle rectangle = threadRectangles[i];
+							int x = (int) rectangle.getX();
+							int y = (int) rectangle.getY();
+							int width = (int) rectangle.getWidth();
+							int height = (int) rectangle.getHeight();
+							processor.processSource(sourcePath, x, y, width, height, phi);
+						}catch(Exception e){
+							e.printStackTrace();
+						}
+						
+					}
 
-			scheduler.getImageFileProcessor().saveImageChunk(res, ic);
-
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
+					
+				}
+			}).start();
 		}
 
-		System.out.println("Hola");
-
+		
 		// Permitir a los procesadores iniciar trabajo
 	}
 

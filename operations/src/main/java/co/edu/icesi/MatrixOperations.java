@@ -1,8 +1,6 @@
 package co.edu.icesi;
 
 
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 
 import org.osoa.sca.annotations.Reference;
 
@@ -12,14 +10,11 @@ import co.edu.icesi.vectors.IVectorOperations;
 /**
  * MatrixOperations
  */
-public class MatrixOperations extends UnicastRemoteObject implements IMatrixOperations {
+public class MatrixOperations implements IMatrixOperations {
     
     @Reference
     private IVectorOperations vectorOperations;
 
-    public MatrixOperations() throws RemoteException{
-        super();
-    }
 
     @Override
     public double[][] matrixMultiplication(double[][] matrix, double[][] matrix2) {

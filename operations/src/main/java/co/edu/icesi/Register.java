@@ -17,13 +17,7 @@ public class Register implements Runnable {
 	private IBroker broker;
 
 	@Property
-	private int portMatrix;
-
-	@Property
 	private int portTiff;
-
-	@Property
-	private String matrixServiceName;
 
 	@Property
 	private String tiffServiceName;
@@ -49,8 +43,6 @@ public class Register implements Runnable {
 		
 		String ip = InetAddress.getLocalHost().getHostAddress();
 		System.out.println("Myip->"+ip);
-		System.out.println("service name->"+matrixServiceName);
-		broker.register( ip, portMatrix, matrixServiceName);
 		broker.register(ip, portTiff, tiffServiceName);
 		System.out.println("signed in");
 	}

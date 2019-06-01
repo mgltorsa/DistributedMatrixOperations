@@ -30,8 +30,18 @@
   	</service>
     
   <implementation.java class="co.edu.icesi.Server" />
- 	<property name="service">operations</property>
+ 	<property name="service">tiff</property>
   </component>
+
+  <component name="tiffManager">
+    <service name="operations">
+      <interface.java interface="co.edu.icesi.interfaces.ITiffManager"/>
+    </service>
+    <implementation.java class="co.edu.icesi.impl.TiffManager"/>
+
+  </component>
+
+  <wire source="server/tiffManager" target="tiffManager/operations"/>
 
 
 </composite>
