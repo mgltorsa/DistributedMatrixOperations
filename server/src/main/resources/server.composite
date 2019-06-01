@@ -13,7 +13,7 @@
   	
   	<reference name="broker">
       <frascati:binding.rmi host="localhost" serviceName="redirecting" port="5555"/>
-      <interface.java interface="co.edu.icesi.interfaces.IBroker">
+      <interface.java interface="co.edu.icesi.interfaces.IBroker"/>
   	</reference>
 
     <service name="r">
