@@ -4,13 +4,13 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
-import co.edu.icesi.interfaces.IBalancer;
+import co.edu.icesi.interfaces.IBroker;
 
 /**
  * Hello world!
  *
  */
-public class Balancer implements IBalancer {
+public class Broker implements IBroker {
 
 	/**
 	 * 
@@ -39,43 +39,43 @@ public class Balancer implements IBalancer {
 		ipsByService.put(ip, objService);
 		priorityQueue.add(objService);
 
-		notify();
+		//notify();
 
 	}
 
 	@Override
 	public String getMultiplicationService() throws IllegalArgumentException {
 
-		while (priorityQueue.isEmpty()) {
-			try {
-				wait();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		synchronized (this){
+		// while (priorityQueue.isEmpty()) {
+		// 	try {
+		// 		wait();
+		// 	} catch (InterruptedException e) {
+		// 		// TODO Auto-generated catch block
+		// 		e.printStackTrace();
+		// 	}
+		// }
+		// synchronized (this){
 			Service objService=priorityQueue.poll();
 			int work = objService.getWork()+1;
 			objService.setWork(work);
 			priorityQueue.add(objService);
 			ipsByService.get(objService.getIp()).setWork(work);
 			return objService.getIp()+":"+objService.getPort();
-		}
+		// }
 
 	}
 
 	@Override
 	public void notifyByService(String ip) {
 
-		synchronized (this){
+		// synchronized (this){
 		Service service = ipsByService.get(ip);
 		priorityQueue.remove(service);
 		int work = service.getWork()-1;
 		service.setWork(work);
 		priorityQueue.add(service);
-		notify();		
-		}
+		// notify();		
+		// }
 	}
 
 	
