@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="UTF-8"?>
 
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
@@ -40,3 +41,52 @@
   <wire source="wrapper/configuration" target="config/IBrokerConfiguration" />
 
 </composite>
+=======
+<?xml version="1.0" encoding="UTF-8"?>
+
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+  xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1"
+  targetNamespace="http://frascati.ow2.org/helloworld-rmi"
+  name="ServerRMI">
+
+  <service name="r" promote="server/r">
+   <interface.java interface="java.lang.Runnable" />
+  </service>
+
+   <service name="s"  promote="server/s">
+      <interface.java interface="co.edu.icesi.interfaces.IServer" />      
+  	</service>
+
+  <component name="server">
+
+  	<reference name="broker">
+      <frascati:binding.rmi host="localhost" serviceName="redirecting" port="5555"/>
+      <interface.java interface="co.edu.icesi.interfaces.IBroker"/>
+  	</reference>
+
+    <service name="r">
+      <interface.java interface="java.lang.Runnable" />
+    </service>
+  	
+	<service name="s" >
+      <frascati:binding.rmi host="localhost" serviceName="server" port="5001"/>
+      <interface.java interface="co.edu.icesi.interfaces.IServer" />      
+  	</service>
+    
+  <implementation.java class="co.edu.icesi.Server" />
+ 	<property name="service">tiff</property>
+  </component>
+
+  <component name="tiffManager">
+    <service name="operations">
+      <interface.java interface="co.edu.icesi.interfaces.ITiffManager"/>
+    </service>
+    <implementation.java class="co.edu.icesi.impl.TiffManager"/>
+
+  </component>
+
+  <wire source="server/tiffManager" target="tiffManager/operations"/>
+
+
+</composite>
+>>>>>>> d4755263fc315e725c44e61eecea6eef0e37914e
