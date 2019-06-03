@@ -4,8 +4,10 @@ import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
 import javax.imageio.stream.ImageInputStream;
@@ -35,9 +37,16 @@ public class TiffManager implements ITiffManager {
             int width = reader.getWidth(reader.getMinIndex());
             int height = reader.getHeight(reader.getMinIndex());
 
-            int block = Math.min(MAX_PIXELS_IN_MEMORY/cores/width, (int) (Math.ceil(height/(double) cores )));
+            if(width*height<MAX_PIXELS_IN_MEMORY){
+                return Arrays.asList(new Rectangle(0, 0, width, height));
+            }else{
 
-            return calculateRectangles(block,width, height);
+                //MAX_PIXELS_IN_MEMORY/cores = pixels per core
+                //pixels per core /width = block size
+                int block = Math.min(MAX_PIXELS_IN_MEMORY/cores/width, (int) (Math.ceil(height/(double) cores )));
+                
+                return calculateRectangles(block,width, height);
+            }
 
         } catch (Exception e) {
             //TODO: handle exception
@@ -52,10 +61,23 @@ public class TiffManager implements ITiffManager {
         for (int y = 0; y < height; y+=block) {
 
             int realHeight = Math.min(block, height-y);
-            Rectangle rectangle = new Rectangle(0,y,width,height);
+            Rectangle rectangle = new Rectangle(0,y,width,realHeight);
             rectangles.add(rectangle);
         }
         return rectangles;
+    }
+
+    @Override
+    public boolean isImage(File file) {
+
+        String mimetype = new MimetypesFileTypeMap().getContentType(file);
+        
+        if(mimetype.equals("image")){
+            return true;
+        }else{
+            return ImageIO.getImageReadersByMIMEType(mimetype).hasNext();
+        }
+        
     }
 
     
