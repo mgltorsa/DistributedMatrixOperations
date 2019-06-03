@@ -1,52 +1,3 @@
-<<<<<<< HEAD
-<?xml version="1.0" encoding="UTF-8"?>
-
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-  xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1"
-  targetNamespace="http://frascati.ow2.org/helloworld-rmi"
-  name="OperationsRMI">
-
-  <service name="r" promote="matrixOperationsRegister/Runnable">    
-  </service>
-
-  <service name="ops " promote="Operations/operations">
-      <frascati:binding.rmi host="localhost/" serviceName="operations" port="8888"/>
-  </service>
-
-  <component name="Operations">
- 
-    <service name="operations">
-      <interface.java interface="co.edu.icesi.interfaces.IMatrixOperations" />
-    </service>
- 
-    
-    <implementation.java class="co.edu.icesi.MatrixOperations" />
- 
-  </component>
-
-  <component name="matrixOperationsRegister">
- 
-    <property name="port">8888</property>
-    <property name="serviceName">operations</property>
-    <implementation.java class="co.edu.icesi.MatrixOperationsRegister" />
- 
-  </component>
-
-
-
-  <component name="config">
-    <property name="brokerHost">localhost</property>
-    <property name="brokerPort">7777</property>
-    <property name="brokerService">redirecting</property>
-    <implementation.java class="co.edu.icesi.configurations.BrokerConfiguration" />
-  </component>
-
-  <wire source="matrixOperationsRegister/configuration" target="config/IBrokerConfiguration" />
-
- 
-
-</composite>
-=======
 <?xml version="1.0" encoding="UTF-8"?>
 
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
@@ -55,6 +6,8 @@
 	name="OperationsRMI">
 
 	<service name="r" promote="Register/r">
+    
+  <service name="rotation" promote="imageOperations/rotation">
 
 	</service>
 
@@ -76,6 +29,14 @@
 	</component>
 
 	<component name="imageOperations">
+    
+    <reference name = "rotation">
+      <frascati:binding.rmi host="localhost"
+				serviceName="rotate" port="5555" />
+			<interface.java
+				interface="co.edu.icesi.interfaces.IMatrixOperations" />
+    </reference>
+    
 		<service name="tiffProcessor">
 			<interface.java
 				interface="co.edu.icesi.interfaces.ITiffProcessor" />
@@ -115,4 +76,3 @@
 	<wire source="imageOperations/matrixOperations" target="matrixOperations/operations"/>
 
 </composite>
->>>>>>> d4755263fc315e725c44e61eecea6eef0e37914e

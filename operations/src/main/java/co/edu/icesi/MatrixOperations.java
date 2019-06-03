@@ -57,6 +57,9 @@ public class MatrixOperations implements IMatrixOperations {
         
         int n = getPointsInRegion(initPoint, lastPoint);
 
+        //
+        int[][] corners = imageCornersRotated(lastPoint[0]-initPoint[0], lastPoint[1]-initPoint[1], phi);
+
         //n+2 porque se necesitan los puntos extremos de la imagen 
         //x,y = esquinas del rectangulo
         int[][] listOfRotatedPoints = new int[dimension][n+2];
@@ -69,10 +72,6 @@ public class MatrixOperations implements IMatrixOperations {
         int xIndex = 0;
         int yIndex = 1;
         int currentIndex = 0;
-        int xleft = 0;
-        int xright = 0;
-        int ytop = 0;
-        int ybottom = 0;
         for(int i=initPoint[0];i<lastPoint[0];i++){
             for (int j = initPoint[1]; j < lastPoint[1]; j++) {
                 double[][] vector = new double[][]{{i},{j}};
@@ -87,28 +86,42 @@ public class MatrixOperations implements IMatrixOperations {
                 int y = rotatedPoint[1];
 
                 System.out.println("x:->> " + x + "y:->> "+y);
-                if(xleft > x)
-                    xleft= x;
-                if(xright < x)
-                    xright = x;
-                if(ytop < y)
-                    ytop= y;
-                if(ybottom > y)
-                    ybottom= y;
-                listOfRotatedPoints[xIndex][currentIndex] = rotatedPoint[0];
-                listOfRotatedPoints[yIndex][currentIndex] = rotatedPoint[1];
-
                 currentIndex++;         
             }
         }
 
-        listOfRotatedPoints[xIndex][n] = xleft;
-        listOfRotatedPoints[xIndex][n+1] = xright;
-        listOfRotatedPoints[yIndex][n] = ybottom;
-        listOfRotatedPoints[yIndex][n+1] = ytop;
+        listOfRotatedPoints[xIndex][n] = corners[0][0];
+        listOfRotatedPoints[xIndex][n+1] = corners[0][1];
+        listOfRotatedPoints[yIndex][n] = corners[1][0];
+        listOfRotatedPoints[yIndex][n+1] = corners[1][1];
 
         return listOfRotatedPoints;
     }
+
+    private static int[][] imageCornersRotated(int width, int height, double phi) {
+		int[][] points = new int[2][2];
+
+		double phiRadians = Math.toRadians(phi);
+
+		double cos = Math.cos(phiRadians);
+		double sin = Math.sin(phiRadians);
+
+		double[] xs = new double[] { 0, cos * width, -sin * height, cos * width - sin * height };
+		double[] ys = new double[] { 0, sin * width, cos * height, sin * width + cos * width };
+
+		Arrays.sort(xs);
+		Arrays.sort(ys);
+
+		points[0][0] = (int) xs[0];
+		
+		points[0][1] = (int) xs[3];
+		
+		points[1][0] = (int) ys[0];
+		
+		points[1][1] = (int) ys[3];
+
+		return points;
+	}
 
     @Override
     public int[][] rotatePointsInRegion(int[] initPoint, int[] lastPoint, double phi) {

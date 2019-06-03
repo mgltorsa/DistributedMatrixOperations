@@ -12,8 +12,7 @@ import co.edu.icesi.interfaces.ITiffProcessor;
  * TiffProcessor
  */
 public class TiffProcessor extends UnicastRemoteObject implements ITiffProcessor {
-
-
+	
 	private static final long serialVersionUID = 1L;
 
 	public TiffProcessor() throws RemoteException {
@@ -30,6 +29,11 @@ public class TiffProcessor extends UnicastRemoteObject implements ITiffProcessor
 		int[][] rotatedPoints = matrixOperations.rotatePointsInRegion(initPoint, lastPoint, phi);
 		
 
+	}
+
+	@Reference(name="operations")
+	public void setMatrixOperations(IMatrixOperations matrixOperations){
+		this.matrixOperations = matrixOperations;
 	}
 
 	

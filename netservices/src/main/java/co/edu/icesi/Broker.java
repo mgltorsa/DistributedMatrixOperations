@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
+import java.util.HashMap;
 
 import co.edu.icesi.interfaces.IBroker;
 
@@ -38,8 +39,6 @@ public class Broker implements IBroker {
 		queue.add(objService);
 		
 	
-
-		import java.util.HashMap;
 
 	}
 
