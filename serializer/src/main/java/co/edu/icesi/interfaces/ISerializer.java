@@ -13,5 +13,5 @@ public interface ISerializer {
 	
 	public boolean isLocked();
 	
-    public boolean drawImage(int x, int y, int width, int height, int[][] image);
+    public void drawImage(int x, int y, int width, int height, int[][] image);
 }
