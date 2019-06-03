@@ -1,6 +1,4 @@
-package test.java.co.edu.icesi.interfaces;
-
-import java.awt.image.BufferedImage;
+package co.edu.icesi.interfaces;
 
 /**
  * ISerializer
@@ -14,5 +12,4 @@ public interface ISerializer {
 	public boolean isLocked();
 	
 	public boolean drawImage(int x, int y, int width, int height, int[][] image);
-	
 }
