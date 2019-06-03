@@ -42,10 +42,6 @@ public class Broker implements IBroker {
 		
 	
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 3966a78e97c915d1979fcdcb7d789826d521aeda
 	}
 
 
