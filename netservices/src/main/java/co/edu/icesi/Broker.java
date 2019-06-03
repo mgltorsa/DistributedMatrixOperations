@@ -1,7 +1,6 @@
 package co.edu.icesi;
 
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -40,6 +39,7 @@ public class Broker implements IBroker {
 		
 	
 
+		import java.util.HashMap;
 
 	}
 
