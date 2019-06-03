@@ -1,6 +1,6 @@
 package co.edu.icesi;
 
-
+import java.util.Arrays;
 
 import org.osoa.sca.annotations.Reference;
 
@@ -98,17 +98,21 @@ public class MatrixOperations implements IMatrixOperations {
         return listOfRotatedPoints;
     }
 
-    private static int[][] imageCornersRotated(int width, int height, double phi) {
+    private int[][] imageCornersRotated(int width, int height, double phi) {
 		int[][] points = new int[2][2];
 
 		double phiRadians = Math.toRadians(phi);
 
 		double cos = Math.cos(phiRadians);
 		double sin = Math.sin(phiRadians);
-
+        
+    
+        
 		double[] xs = new double[] { 0, cos * width, -sin * height, cos * width - sin * height };
 		double[] ys = new double[] { 0, sin * width, cos * height, sin * width + cos * width };
 
+        
+        
 		Arrays.sort(xs);
 		Arrays.sort(ys);
 
@@ -135,7 +139,7 @@ public class MatrixOperations implements IMatrixOperations {
 
             for (int j = 0; j < matrix.length; j++) {
                 transposed[i][j] = matrix[j][i];
-            }
+            } 
                         
         }
         // printMatrix("trans",transposed);

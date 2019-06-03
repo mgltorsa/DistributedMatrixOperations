@@ -6,8 +6,6 @@
 	name="OperationsRMI">
 
 	<service name="r" promote="Register/r">
-    
-  <service name="rotation" promote="imageOperations/rotation">
 
 	</service>
 
@@ -29,14 +27,6 @@
 	</component>
 
 	<component name="imageOperations">
-    
-    <reference name = "rotation">
-      <frascati:binding.rmi host="localhost"
-				serviceName="rotate" port="5555" />
-			<interface.java
-				interface="co.edu.icesi.interfaces.IMatrixOperations" />
-    </reference>
-    
 		<service name="tiffProcessor">
 			<interface.java
 				interface="co.edu.icesi.interfaces.ITiffProcessor" />
