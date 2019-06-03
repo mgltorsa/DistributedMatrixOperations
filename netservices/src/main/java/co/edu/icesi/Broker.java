@@ -20,7 +20,8 @@ public class Broker implements IBroker {
 	 */
 
 	private static HashMap<String, Service> ipsByService = new HashMap<String, Service>();
-	private static LinkedList<Service> queue = new LinkedList<Service>();
+	private static LinkedList<Service> tiffProcessors = new LinkedList<Service>();
+	private static LinkedList<Service> serializers = new LinkedList<Service>();
 	private static int currentService=0;
 
 
@@ -34,11 +35,14 @@ public class Broker implements IBroker {
 			throw new IllegalArgumentException("values cannot be empty");
 		}
 
-		Service objService = new Service(ip, port);
+		Service objService = new Service(service, ip, port);
 		ipsByService.put(ip, objService);
 
-		
-		queue.add(objService);
+		if(service.equals("tiff")){
+			tiffProcessors.add(objService);
+		}else if(service.equals("serializer")){
+			serializers.add(objService);
+		}
 		
 	
 
@@ -59,8 +63,8 @@ public class Broker implements IBroker {
 
 	private String getNextTiffProcessor() {
 		
-		String processor = queue.get(currentService++).toString();
-		if(currentService>queue.size()){
+		String processor = tiffProcessors.get(currentService++).toString();
+		if(currentService>tiffProcessors.size()){
 			currentService=0;
 		}
 		return processor;
@@ -68,7 +72,19 @@ public class Broker implements IBroker {
 
 	@Override
 	public int getTotalProcessors() {
-		return queue.size();
+		return tiffProcessors.size();
+	}
+
+	@Override
+	public String[] getImageSerializers() throws IllegalArgumentException {
+		
+		
+		String[] services = new String[serializers.size()];
+		for (int i = 0; i < services.length; i++) {
+			services[i]=serializers.get(i).toString();
+		}
+		
+		return services;
 	}
 	
 }

@@ -12,7 +12,7 @@ import org.osoa.sca.annotations.Service;
 @Service
 public interface ITiffManager {
 
-    public List<Rectangle> calculateRegions(String sourcePath, int cores);
+    public List<Rectangle> calculateRegions(String sourcePath);
 
 	public boolean isImage(File file);
 }

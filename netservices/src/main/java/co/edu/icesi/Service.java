@@ -5,11 +5,13 @@ package co.edu.icesi;
  */
 public class Service {
 
+    private String service;
     private String ip;
     private int port;
     private int work;
 
-    public Service(String ip, int port) {
+    public Service(String service, String ip, int port) {
+        this.service=service;
         this.ip=ip;
         this.port=port;
         this.work=0;
@@ -52,7 +54,7 @@ public class Service {
 
     @Override
     public String toString() {
-        return ip+":"+port;
+        return ip+":"+port+":"+service;
     }
     
     

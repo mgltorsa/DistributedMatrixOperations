@@ -8,5 +8,7 @@ import java.rmi.RemoteException;
  */
 public interface ITiffProcessor extends Remote {
 
-    public void processSource(String source, int x, int y, int width, int height, double phi) throws RemoteException;
+    public void processSource(int x, int y, int width, int height, double phi, String callbackserializer) throws RemoteException;
+    public boolean isLocked();
+
 }
