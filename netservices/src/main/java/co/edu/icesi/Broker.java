@@ -1,6 +1,7 @@
 package co.edu.icesi;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
@@ -20,6 +21,7 @@ public class Broker implements IBroker {
 
 	private static HashMap<String, Service> ipsByService = new HashMap<String, Service>();
 	private static LinkedList<Service> queue = new LinkedList<Service>();
+	private static int currentService=0;
 
 
 	@Override
@@ -40,6 +42,10 @@ public class Broker implements IBroker {
 		
 	
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 3966a78e97c915d1979fcdcb7d789826d521aeda
 	}
 
 
@@ -48,11 +54,20 @@ public class Broker implements IBroker {
 	public String[] getTiffProcessors(int quantity) throws IllegalArgumentException {
 	
 		String[] services = new String[quantity];
-		int limit = quantity<queue.size() ? quantity : queue.size();
-		for (int i = 0; i < limit; i++) {
-			services[i]=queue.get(i).toString();
+		for (int i = 0; i < quantity; i++) {
+			services[i]=getNextTiffProcessor();
 		}
+		
 		return services;
+	}
+
+	private String getNextTiffProcessor() {
+		
+		String processor = queue.get(currentService++);
+		if(currentService>queue.size()){
+			currentService=0;
+		}
+		return processor;
 	}
 
 	@Override
