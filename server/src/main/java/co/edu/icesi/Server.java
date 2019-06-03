@@ -4,9 +4,8 @@ package co.edu.icesi;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Paths;
+
+
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -111,7 +110,13 @@ public class Server implements IServer, Runnable {
 			public void run() {
 				ISerializer serializer = getImageSerializer(callbackserializer);
 				while(serializer.isLocked()){
-					Thread.sleep(1000);
+					try {
+						
+						Thread.sleep(1000);
+					} catch (Exception e) {
+						//TODO: handle exception
+						e.printStackTrace();
+					}
 				}
 				serializer.setDestPath(destPath);
 				processImage(absolutePath, destPath, phi, callbackserializer);
@@ -122,11 +127,18 @@ public class Server implements IServer, Runnable {
 	}
 
 	private ISerializer getImageSerializer(String rmiEncodedUrl) {
-		String[] info = rmiEncodedUrl.split(":");
-		String ip = info[0];
-		String port = info[1];
-		String service = info[2];
-		return (ISerializer) Naming.lookup("rmi://"+ip+":"+port+"/"+service);
+		try {
+			String[] info = rmiEncodedUrl.split(":");
+			String ip = info[0];
+			String port = info[1];
+			String service = info[2];
+			return (ISerializer) Naming.lookup("rmi://"+ip+":"+port+"/"+service);
+			
+		} catch (Exception e) {
+			//TODO: handle exception
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	private void processImage(String imagePath, String destPath, double phi, String callbackserializer) {
@@ -166,10 +178,22 @@ public class Server implements IServer, Runnable {
 					int y = (int) rectangle.getY();
 					int width = (int) rectangle.getWidth();
 					int height = (int) rectangle.getHeight();
-					while(processor.isLocked()){
-						Thread.sleep(1000);
+					try {
+						while(processor.isLocked()){
+								
+								Thread.sleep(1000);
+						}
+					} catch (Exception e) {
+							//TODO: handle exception
+							e.printStackTrace();
 					}
-					processor.processSource(x, y, width, height, phi, callbackserializer);
+					try {
+						
+						processor.processSource(x, y, width, height, phi, callbackserializer);
+					} catch (Exception e) {
+						//TODO: handle exception
+						e.printStackTrace();
+					}
 				}
 			}
 
@@ -180,11 +204,18 @@ public class Server implements IServer, Runnable {
 
 	private ITiffProcessor getProcessor(String rmiEncodedUrl) {
 
-		String[] info = rmiEncodedUrl.split(":");
-		String ip = info[0];
-		String port = info[1];
-		String service = info[2];
-		return (ITiffProcessor) Naming.lookup("rmi://"+ip+":"+port+"/"+service);
+		try {
+			String[] info = rmiEncodedUrl.split(":");
+			String ip = info[0];
+			String port = info[1];
+			String service = info[2];
+			return (ITiffProcessor) Naming.lookup("rmi://"+ip+":"+port+"/"+service);
+			
+		} catch (Exception e) {
+			//TODO: handle exception
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	private File[] getImagesInDirectory(File directory) {
@@ -202,12 +233,13 @@ public class Server implements IServer, Runnable {
 	
 
 	private File getDirectory(String sourcePath) {
-		boolean isDirectory = Files.isDirectory(Paths.get(sourcePath), LinkOption.NOFOLLOW_LINKS);
-		if(!isDirectory){
+		File file = new File(sourcePath);
+		
+		
+		if(!file.isDirectory()){
 			throw new IllegalArgumentException("path is not a directory");
 		}
-		File directory = new File(sourcePath);
-		return directory;
+		return file;
 	}
 
 }

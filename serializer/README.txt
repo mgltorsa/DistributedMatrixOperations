@@ -1,0 +1,2 @@
+frascati compile src/main/java serializer
+frascati run src/main/resources/serializer -libpath serializer.jar -s r -m run

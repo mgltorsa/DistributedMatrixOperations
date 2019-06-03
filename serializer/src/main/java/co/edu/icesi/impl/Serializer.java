@@ -11,16 +11,27 @@ import javax.imageio.ImageWriter;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 
-import com.sun.prism.Image;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 
 import org.w3c.dom.ls.LSOutput;
+import java.net.InetAddress;
 
-import main.java.co.edu.icesi.interfaces.ISerializer;
+
+import co.edu.icesi.interfaces.ISerializer;
+import co.edu.icesi.interfaces.IBroker;
+
+
+import org.osoa.sca.annotations.Property;
+import org.osoa.sca.annotations.Reference;
+
+import java.io.File;
+
 
 /**
  * Serializer
  */
-public class Serializer implements ISerializer{
+public class Serializer extends UnicastRemoteObject implements ISerializer, Runnable{
 
     private static int workers;
 	
@@ -29,10 +40,41 @@ public class Serializer implements ISerializer{
     private static String destPath;
     
     private static String sourcePath;
-    
-    public Serializer(){
 
+    @Property
+    private String serviceName;
+
+    @Property
+    private int port;
+
+    private IBroker broker;
+
+    public Serializer() throws RemoteException {
+        super();
     }
+
+    @Reference(name = "broker")
+	public void setBalancer(IBroker broker) {
+		this.broker = broker;
+	}
+
+    @Override
+    public void run(){
+        try {
+			registerServices();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    }
+
+    private void registerServices() throws Exception {
+		
+		String ip = InetAddress.getLocalHost().getHostAddress();
+		System.out.println("Myip->"+ip);
+		broker.register(ip, port, serviceName);
+		System.out.println("signed in");
+	}
 
 	public boolean isLocked() {
 		if(lock == 0)
@@ -95,7 +137,7 @@ public class Serializer implements ISerializer{
         for(int i = 0; i < lastPoint; i++){
 
             int c = lastPoint%width;
-            int r = (lastPoint/w);
+            int r = (int) (lastPoint/w);
 
             int newX = points[0][i]-xLeft;
             int newY = points[1][i]-yBottom;
@@ -110,6 +152,7 @@ public class Serializer implements ISerializer{
     }
     
     public BufferedImage getImageChunk(int x, int y, int width, int height, String source){
+        try{
         File image = new File(source);
         ImageInputStream iis = ImageIO.createImageInputStream(image);
         ImageReader ir = ImageIO.getImageReaders(iis).next();
@@ -124,19 +167,31 @@ public class Serializer implements ISerializer{
         iis.close();
 
         return bi;
+
+        } catch (Exception e) {
+            //TODO: handle exception
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
-    public BufferedImage saveImageChunk(BufferedImage chunk, String dest){
+    public void saveImageChunk(BufferedImage chunk, String dest){
+        try {
         File image = new File(dest);
         ImageOutputStream ios = ImageIO.createImageOutputStream(image);
         ImageReader ir = ImageIO.getImageReaders(ios).next();
         ImageWriter iw = ImageIO.getImageWriter(ir);
 
-        iw.setOutput(ios);
-        iw.write(null, new IIOImage(chunk, null, null), null);
-        iw.dispose();
-        ios.close();
+            iw.setOutput(ios);
+            iw.write(null, new IIOImage(chunk, null, null), null);
+            iw.dispose();
+            ios.close();
+            
+        } catch (Exception e) {
+            //TODO: handle exception
+            e.printStackTrace();
+        }
 
-        return bi;
     }
 }

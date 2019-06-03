@@ -85,7 +85,6 @@ public class MatrixOperations implements IMatrixOperations {
                 listOfRotatedPoints[0][currentIndex]=rotatedPoint[0];
 				listOfRotatedPoints[1][currentIndex]=rotatedPoint[1];
 
-                System.out.println("x:->> " + x + "y:->> "+y);
                 currentIndex++;         
             }
         }

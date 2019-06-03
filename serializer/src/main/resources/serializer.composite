@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+  xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1"
+  targetNamespace="http://frascati.ow2.org/helloworld-rmi"
+  name="SerializerRMI">
+
+<service name="r" promote="serializer/r">
+   <interface.java interface="java.lang.Runnable" />
+  </service>
+
+  <component name="serializer">
+
+  	<reference name="broker">
+      <frascati:binding.rmi host="localhost" serviceName="redirecting" port="5555"/>
+      <interface.java interface="co.edu.icesi.interfaces.IBroker"/>
+  	</reference>   
+  	
+    <service name="r">
+      <interface.java interface="java.lang.Runnable" />
+    </service>
+
+	<service name="s" >
+      <frascati:binding.rmi host="localhost" serviceName="serializer" port="5010"/>
+      <interface.java interface="co.edu.icesi.interfaces.ISerializer" />      
+  	</service>
+
+    <property name="port">5010</property>
+  	<property name="serviceName">serializer</property>
+    
+  <implementation.java class="co.edu.icesi.impl.Serializer" />
+ 	
+  </component>
+
+
+</composite>

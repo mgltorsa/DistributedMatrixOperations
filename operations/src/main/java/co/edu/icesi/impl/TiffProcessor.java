@@ -35,7 +35,13 @@ public class TiffProcessor extends UnicastRemoteObject implements ITiffProcessor
 
 		ISerializer serializer = getImageSerializer(callbackserializer);
 		while(serializer.isLocked()){
-			Thread.sleep(1000);
+			try {
+				
+				Thread.sleep(1000);
+			} catch (Exception e) {
+				//TODO: handle exception
+				e.printStackTrace();
+			}
 		}		
 		serializer.drawImage(x, y, width, height, rotatedPoints);
 		lock=false;
@@ -43,12 +49,19 @@ public class TiffProcessor extends UnicastRemoteObject implements ITiffProcessor
 
 	}
 
-	public ISerializer getImageSerialize(String rmiEncodedUrl){
-		String[] info = rmiEncodedUrl.split(":");
-		String ip = info[0];
-		String port = info[1];
-		String service = info[2];
-		return (ISerializer) Naming.lookup("rmi://"+ip+":"+port+"/"+service);
+	public ISerializer getImageSerializer(String rmiEncodedUrl){
+		try {
+			String[] info = rmiEncodedUrl.split(":");
+			String ip = info[0];
+			String port = info[1];
+			String service = info[2];
+			return (ISerializer) Naming.lookup("rmi://"+ip+":"+port+"/"+service);
+			
+		} catch (Exception e) {
+			//TODO: handle exception
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	@Reference(name="operations")
