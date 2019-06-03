@@ -73,6 +73,8 @@ public class Serializer implements ISerializer{
 
 	@Override
 	public void drawImage(int x, int y, int width, int height, int[][] points) {
+        //0 is locked
+        lock=0;
 		// TODO Auto-generated method stub
 		BufferedImage originalImageChunk = getImageChunk(x, y, width, height, sourcePath);
         
@@ -101,7 +103,9 @@ public class Serializer implements ISerializer{
             newImageChunk.setRGB(newX, newY, originalImageChunk.getRGB(c, r));
         }
 
-		saveImageChunk(newImageChunk, destPath);
+        saveImageChunk(newImageChunk, destPath);
+        
+        lock=1;
 		
     }
     

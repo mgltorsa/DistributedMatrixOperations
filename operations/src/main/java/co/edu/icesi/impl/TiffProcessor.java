@@ -34,6 +34,9 @@ public class TiffProcessor extends UnicastRemoteObject implements ITiffProcessor
 		int[][] rotatedPoints = matrixOperations.rotatePointsInRegion(initPoint, lastPoint, phi);
 
 		ISerializer serializer = getImageSerializer(callbackserializer);
+		while(serializer.isLocked()){
+			Thread.sleep(1000);
+		}		
 		serializer.drawImage(x, y, width, height, rotatedPoints);
 		lock=false;
 		
