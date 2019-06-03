@@ -83,29 +83,37 @@ public class Server implements IServer, Runnable {
 
 		for (int i = 0; i < processors.length; i++) {
 			final Rectangle[] threadRectangles = new Rectangle[rectanglesPerCore];
+			//Repite regiones, arreglar TODO:
 			rectangles.toArray(threadRectangles);
-			new Thread(new Runnable(){
+
+			try{
+				final ITiffProcessor processor =  (ITiffProcessor) Naming.lookup("rmi://"+processors[i]+"/"+service);
+
+				new Thread(new Runnable(){
 			
-				@Override
-				public void run() {
-					for (int i = 0; i < threadRectangles.length; i++) {
-						try{
-							ITiffProcessor processor =  (ITiffProcessor) Naming.lookup("rmi://"+processors[i]+"/"+service);
-							Rectangle rectangle = threadRectangles[i];
-							int x = (int) rectangle.getX();
-							int y = (int) rectangle.getY();
-							int width = (int) rectangle.getWidth();
-							int height = (int) rectangle.getHeight();
-							processor.processSource(sourcePath, x, y, width, height, phi);
-						}catch(Exception e){
-							e.printStackTrace();
+					@Override
+					public void run() {
+						for (int j = 0; j < threadRectangles.length; j++) {
+							try{
+								Rectangle rectangle = threadRectangles[j];
+								int x = (int) rectangle.getX();
+								int y = (int) rectangle.getY();
+								int width = (int) rectangle.getWidth();
+								int height = (int) rectangle.getHeight();
+								processor.processSource(sourcePath, x, y, width, height, phi);
+							}catch(Exception e){
+								e.printStackTrace();
+							}
+							
 						}
+	
 						
 					}
-
-					
-				}
-			}).start();
+				}).start();
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			
 		}
 
 		
