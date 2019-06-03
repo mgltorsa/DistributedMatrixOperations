@@ -17,6 +17,7 @@ import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import co.edu.icesi.interfaces.IBroker;
+import co.edu.icesi.interfaces.ISerializer;
 import co.edu.icesi.interfaces.IServer;
 import co.edu.icesi.interfaces.ITiffManager;
 import co.edu.icesi.interfaces.ITiffProcessor;
@@ -29,11 +30,16 @@ public class Server implements IServer, Runnable {
 
 	private IBroker broker;
 
+	private static int currentSerializer = 0;
+
+	private static String[] serializers;
+
 	@Property
 	private String service;
 
 	@Reference
 	private ITiffManager tiffManager;
+
 
 
 	@Reference(name = "broker")
@@ -85,8 +91,11 @@ public class Server implements IServer, Runnable {
 			
 		File directory = getDirectory(sourcePath);
 		File[] files = getImagesInDirectory(directory);
+		serializers= broker.getImageSerializers();
+		
 		for (File file : files) {
-			processImage(file.getAbsolutePath(), destPath, phi);
+
+			startFileProcessThread(file.getAbsolutePath(), destPath, phi, serializers[currentSerializer++]);
 		}	
 
 		
@@ -95,30 +104,57 @@ public class Server implements IServer, Runnable {
 		// Permitir a los procesadores iniciar trabajo
 	}
 
-	private void processImage(String imagePath, String destPath, double phi) {
+	private void startFileProcessThread(final String absolutePath, final String destPath,final double phi,final String callbackserializer) {
+		new Thread(new Runnable(){
+		
+			@Override
+			public void run() {
+				ISerializer serializer = getImageSerializer(callbackserializer);
+				while(serializer.isLocked()){
+					Thread.sleep(1000);
+				}
+				serializer.setDestPath(destPath);
+				processImage(absolutePath, destPath, phi, callbackserializer);
+			}
+
+			
+		}).start();
+	}
+
+	private ISerializer getImageSerializer(String rmiEncodedUrl) {
+		String[] info = rmiEncodedUrl.split(":");
+		String ip = info[0];
+		String port = info[1];
+		String service = info[2];
+		return (ISerializer) Naming.lookup("rmi://"+ip+":"+port+"/"+service);
+	}
+
+	private void processImage(String imagePath, String destPath, double phi, String callbackserializer) {
 		
 		int cores =  broker.getTotalProcessors();
-		List<Rectangle> rectangles =  tiffManager.calculateRegions(imagePath, cores);
-		int rectanglesPerCore = rectangles.size()/cores;
+		List<Rectangle> rectangles =  tiffManager.calculateRegions(imagePath);
+		int rectanglesPerCore = rectangles.size()==1 ? 1 : rectangles.size()/cores;
 		final String[] processors = broker.getTiffProcessors(Math.min(rectangles.size(), cores));	
-
-		int currentRectangleOffset= 0;
 		
+		int currentRectangleOffset= 0;
+
+
 		
 		//For each processor we will process an image region.
 		for (int i = 0; i < processors.length; i++) {
 
 			Rectangle[] threadRectangles = new Rectangle[rectanglesPerCore];
 			rectangles.subList(currentRectangleOffset, rectanglesPerCore);
+
 			currentRectangleOffset+=rectanglesPerCore;
 			
-			runThreadProcessor(imagePath, processors[i], threadRectangles, phi);
+			runThreadProcessor(processors[i], threadRectangles, phi, callbackserializer);
 
 		}
 			
 	}
 
-	private void runThreadProcessor(final String imagePath,final String processorStr, final Rectangle[] threadRectangles, final double phi) {
+	private void runThreadProcessor(final String processorStr, final Rectangle[] threadRectangles, final double phi, final String callbackserializer) {
 		new Thread(new Runnable(){
 		
 			@Override
@@ -130,7 +166,10 @@ public class Server implements IServer, Runnable {
 					int y = (int) rectangle.getY();
 					int width = (int) rectangle.getWidth();
 					int height = (int) rectangle.getHeight();
-					processor.processSource(imagePath, x, y, width, height, phi);
+					while(processor.isLocked()){
+						Thread.sleep(1000);
+					}
+					processor.processSource(x, y, width, height, phi, callbackserializer);
 				}
 			}
 
@@ -139,9 +178,13 @@ public class Server implements IServer, Runnable {
 
 	}
 
-	private ITiffProcessor getProcessor(String ip) {
+	private ITiffProcessor getProcessor(String rmiEncodedUrl) {
 
-		return (ITiffProcessor) Naming.lookup("rmi://"+ip+"/"+service);
+		String[] info = rmiEncodedUrl.split(":");
+		String ip = info[0];
+		String port = info[1];
+		String service = info[2];
+		return (ITiffProcessor) Naming.lookup("rmi://"+ip+":"+port+"/"+service);
 	}
 
 	private File[] getImagesInDirectory(File directory) {

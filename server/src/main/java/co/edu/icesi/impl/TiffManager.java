@@ -19,6 +19,7 @@ import co.edu.icesi.interfaces.ITiffManager;
  */
 public class TiffManager implements ITiffManager {
 
+    public static final int MAX_PIXELS_PER_BLOCK = 1024;
     public static final int MAX_PIXELS_IN_MEMORY = 1024*1024;
 
     private ImageReader getImageReader(String sourcePath) throws IOException {
@@ -30,22 +31,25 @@ public class TiffManager implements ITiffManager {
     }
 
     @Override
-    public List<Rectangle> calculateRegions(String sourcePath, int cores) {
+    public List<Rectangle> calculateRegions(String sourcePath) {
 
         try {
             ImageReader reader =  getImageReader(sourcePath);
             int width = reader.getWidth(reader.getMinIndex());
             int height = reader.getHeight(reader.getMinIndex());
 
-            if(width*height<MAX_PIXELS_IN_MEMORY){
+            if(width*height< MAX_PIXELS_IN_MEMORY ){
                 return Arrays.asList(new Rectangle(0, 0, width, height));
             }else{
 
                 //MAX_PIXELS_IN_MEMORY/cores = pixels per core
                 //pixels per core /width = block size
-                int block = Math.min(MAX_PIXELS_IN_MEMORY/cores/width, (int) (Math.ceil(height/(double) cores )));
-                
-                return calculateRectangles(block,width, height);
+                int blocksByWidth = width/MAX_PIXELS_PER_BLOCK;
+                int blocksByHeight = height/MAX_PIXELS_PER_BLOCK;
+
+                int blocks = blocksByWidth*blocksByHeight;
+
+                return calculateRectangles(blocks, width, height);
             }
 
         } catch (Exception e) {
@@ -55,14 +59,14 @@ public class TiffManager implements ITiffManager {
         return null;
     }
 
-    private List<Rectangle> calculateRectangles(int block, int width, int height) {
+    private List<Rectangle> calculateRectangles(int blocks, int width, int height) {
 
         List<Rectangle> rectangles = new ArrayList<Rectangle>();
-        for (int y = 0; y < height; y+=block) {
-
-            int realHeight = Math.min(block, height-y);
-            Rectangle rectangle = new Rectangle(0,y,width,realHeight);
-            rectangles.add(rectangle);
+        for (int i = 0; i < width; i+=MAX_PIXELS_PER_BLOCK) {
+            for (int j = 0; j < height; j+=MAX_PIXELS_PER_BLOCK) {
+                rectangles.add(new Rectangle(i,j,MAX_PIXELS_PER_BLOCK ,MAX_PIXELS_PER_BLOCK));
+            }
+            
         }
         return rectangles;
     }

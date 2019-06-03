@@ -10,6 +10,7 @@ public interface IBroker{
 
 	public String[] getTiffProcessors(int quantity) throws IllegalArgumentException;
 
-
 	public int getTotalProcessors();
+
+	public String[] getImageSerializers() throws IllegalArgumentException;
 }
