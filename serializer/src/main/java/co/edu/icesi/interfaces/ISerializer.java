@@ -1,4 +1,4 @@
-package main.java.co.edu.icesi.interfaces;
+package co.edu.icesi.interfaces;
 
 /**
  * ISerializer

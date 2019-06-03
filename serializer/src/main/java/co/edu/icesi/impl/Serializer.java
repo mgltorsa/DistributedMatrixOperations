@@ -1,4 +1,4 @@
-package main.java.co.edu.icesi.impl;
+package co.edu.icesi.impl;
 
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
