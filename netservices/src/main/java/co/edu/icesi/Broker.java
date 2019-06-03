@@ -59,7 +59,7 @@ public class Broker implements IBroker {
 
 	private String getNextTiffProcessor() {
 		
-		String processor = queue.get(currentService++);
+		String processor = queue.get(currentService++).toString();
 		if(currentService>queue.size()){
 			currentService=0;
 		}
