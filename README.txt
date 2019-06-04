@@ -1,3 +1,17 @@
+Integrantes Miguel Angel Torres - Mauricio Hernandez Motta
+
+Para hacer el deployment del proyecto respectivo, basta con ejecutar el script de deploy en cada
+uno de los folders de los proyectos
+
+el orden de deploy debe ser.
+
+./netservices/deploynetservices
+./operations/deploymatrix
+./operations/deployoperations
+./serializer/deployserializer
+./server/deployserver
+./client/deployclient
+
 Servicios y puertos.
 
 BROKER
