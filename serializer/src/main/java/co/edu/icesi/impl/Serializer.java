@@ -10,6 +10,7 @@ import javax.imageio.*;
 import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.ImageWriter;
+import javax.imageio.spi.IIORegistry;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 
@@ -17,6 +18,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 import org.w3c.dom.ls.LSOutput;
+
 import java.net.InetAddress;
 import java.io.Serializable;
 
@@ -24,11 +26,12 @@ import co.edu.icesi.interfaces.ISerializer;
 import co.edu.icesi.interfaces.IBroker;
 
 
+import com.github.jaiimageio.impl.plugins.tiff.TIFFImageReaderSpi;
+
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
 
 import java.io.File;
-
 
 /**
  * Serializer
@@ -53,6 +56,8 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
 
     public Serializer() throws RemoteException {
         super();
+        IIORegistry reg = IIORegistry.getDefaultInstance();
+		reg.registerServiceProvider(new TIFFImageReaderSpi());
     }
 
     @Reference(name = "broker")
