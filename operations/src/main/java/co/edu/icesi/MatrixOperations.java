@@ -61,7 +61,7 @@ public class MatrixOperations implements IMatrixOperations {
         System.out.println(lastPoint[0]+"-"+initPoint[0]);
         System.out.println(lastPoint[1]+"-"+initPoint[1]);
 
-        int[][] corners = imageCornersRotated(lastPoint[0]-initPoint[0], lastPoint[1]-initPoint[1], phi);
+        int[][] corners = imageCornersRotated(initPoint, lastPoint, phi);
 
         //n+2 porque se necesitan los puntos extremos de la imagen 
         //x,y = esquinas del rectangulo
@@ -99,30 +99,26 @@ public class MatrixOperations implements IMatrixOperations {
         return listOfRotatedPoints;
     }
 
-    private int[][] imageCornersRotated(int width, int height, double phi) {
+    private int[][] imageCornersRotated(int[] init, int[] fin, double phi) {
 		int[][] points = new int[2][2];
 
 		double phiRadians = Math.toRadians(phi);
 
 		double cos = Math.cos(phiRadians);
 		double sin = Math.sin(phiRadians);
-        
-    
-        
-		double[] xs = new double[] { 0, cos * width, -sin * height, cos * width - sin * height };
-		double[] ys = new double[] { 0, sin * width, cos * height, sin * width + cos * width };
 
-        
-        
+		double[] xs = new double[] { cos * init[0] - sin * init[1], cos * fin[0] - sin * fin[1], cos * init[0] - sin * fin[1], cos * fin[0] - sin * init[1] };
+		double[] ys = new double[] { cos * init[1] + sin * init[0], cos * fin[1] + sin * fin[0], cos * init[1] + sin * fin[0], cos * fin[1] + sin * init[0] };
+
 		Arrays.sort(xs);
 		Arrays.sort(ys);
 
-		points[0][0] = (int) xs[0];
-		
+		points[0][0] = (int) (xs[0]);
+
 		points[0][1] = (int) xs[3];
-		
-		points[1][0] = (int) ys[0];
-		
+
+		points[1][0] = (int) (ys[0]);
+
 		points[1][1] = (int) ys[3];
 
 		return points;
