@@ -160,30 +160,36 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
 
         double w = width;
 
-        for (int i = 0; i < lastPoint; i++) {
-
-            // TODO: handle exception
-            int c = i % width;
-            int r = (int) (i / w);
-
-            int newX = points[0][i] - xLeft;
-            int newY = points[1][i] - yBottom;
-
-            // System.out.println("c:-> " + c);
-            // System.out.println("r:-> " + r);
-            // System.out.println("X:-> " + newX);
-            // System.out.println("Y:-> " + newY);
-            // System.out.println("-------------------------");
-
-            newImageChunk.setRGB(newX, newY, originalImageChunk.getRGB(width - c - 1, r));
-
+        try {
+            
+            for (int i = 0; i < lastPoint; i++) {
+                
+                // TODO: handle exception
+                int c = i % width;
+                int r = (int) (i / w);
+                
+                int newX = points[0][i] - xLeft;
+                int newY = points[1][i] - yBottom;
+                
+                // System.out.println("c:-> " + c);
+                // System.out.println("r:-> " + r);
+                // System.out.println("X:-> " + newX);
+                // System.out.println("Y:-> " + newY);
+                // System.out.println("-------------------------");
+                
+                newImageChunk.setRGB(newX, newY, originalImageChunk.getRGB(width - c - 1, r));
+                
+            }
+            
+            
+            if(!joinImage(newImageChunk)){
+                saveImageChunk(newImageChunk, destPath);
+            }
+        } catch (Exception e) {
+            //TODO: handle exception
+            e.printStackTrace();
         }
-
-
-        if(!joinImage(newImageChunk)){
-            saveImageChunk(newImageChunk, destPath);
-        }
-        
+        finally{
         lock=1;
 
         lock = 1;
@@ -195,6 +201,7 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
             System.out.println("unlocked by path");
         }
         System.out.println("unlocked");
+        }
 
     }
 
