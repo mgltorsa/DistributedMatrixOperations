@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.rmi.Naming;
 
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -24,6 +25,12 @@ public class Client implements Runnable {
 	@Override
 	public void run() {
 		
+		try {
+			setServer((IServer) Naming.lookup("rmi://localhost:5001/server"));
+		} catch (Exception e) {
+			//TODO: handle exception
+			e.printStackTrace();
+		}
 		runApp();
 
 	}
@@ -68,7 +75,7 @@ public class Client implements Runnable {
 		return info;
 	}
 
-	@Reference(name="server")
+	// @Reference(name="server")
 	public void setServer(IServer server) {
 		this.server = server;
 	}

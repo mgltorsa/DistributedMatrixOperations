@@ -1,5 +1,7 @@
 package co.edu.icesi;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Arrays;
 
 import org.osoa.sca.annotations.Reference;
@@ -10,8 +12,15 @@ import co.edu.icesi.vectors.IVectorOperations;
 /**
  * MatrixOperations
  */
-public class MatrixOperations implements IMatrixOperations {
-    
+public class MatrixOperations extends UnicastRemoteObject implements IMatrixOperations {
+
+    private static final long serialVersionUID = 1L;
+
+    public MatrixOperations() throws RemoteException {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
     @Reference
     private IVectorOperations vectorOperations;
 

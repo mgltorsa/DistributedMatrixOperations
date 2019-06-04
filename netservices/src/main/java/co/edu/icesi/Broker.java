@@ -1,5 +1,9 @@
 package co.edu.icesi;
 
+import java.rmi.Naming;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,7 +17,14 @@ import co.edu.icesi.interfaces.IBroker;
  * Hello world!
  *
  */
-public class Broker implements IBroker {
+public class Broker extends UnicastRemoteObject implements IBroker, Runnable {
+
+	private static final long serialVersionUID = 1L;
+
+	public Broker() throws RemoteException {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * 
@@ -24,6 +35,20 @@ public class Broker implements IBroker {
 	private static LinkedList<Service> serializers = new LinkedList<Service>();
 	private static int currentService=0;
 
+
+	@Override
+	public void run() {
+		try {
+			System.out.println("binding...");
+			LocateRegistry.createRegistry(5555);
+			Naming.rebind("rmi://localhost:5555/redirecting", this);
+			System.out.println("binded");
+			
+		} catch (Exception e) {
+			//TODO: handle exceptionmatrixOperations
+		}
+
+	}
 
 	@Override
 	public void register(String ip, int port, String service) throws IllegalArgumentException {
@@ -63,10 +88,10 @@ public class Broker implements IBroker {
 
 	private String getNextTiffProcessor() {
 		
-		String processor = tiffProcessors.get(currentService++).toString();
 		if(currentService>tiffProcessors.size()){
 			currentService=0;
 		}
+		String processor = tiffProcessors.get(currentService++).toString();
 		return processor;
 	}
 

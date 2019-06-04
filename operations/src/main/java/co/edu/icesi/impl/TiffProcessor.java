@@ -33,7 +33,14 @@ public class TiffProcessor extends UnicastRemoteObject implements ITiffProcessor
 		System.out.println("locked");
 		int[] initPoint = {x,y};
 		int[] lastPoint = {x+width,y+height};
-		int[][] rotatedPoints = matrixOperations.rotatePointsInRegion(initPoint, lastPoint, phi);
+		int[][] rotatedPoints = null;
+		try {
+			
+			rotatedPoints = matrixOperations.rotatePointsInRegion(initPoint, lastPoint, phi);
+		} catch (Exception e) {
+			//TODO: handle exception
+			e.printStackTrace();
+		}
 		System.out.println("rotated with length -> "+rotatedPoints.length);
 		
 		try {

@@ -3,9 +3,11 @@ package co.edu.icesi;
 
 import java.awt.Rectangle;
 import java.io.File;
-
-
+import java.net.MalformedURLException;
 import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +23,16 @@ import co.edu.icesi.interfaces.ITiffProcessor;
 /**
  * Server
  */
-public class Server implements IServer, Runnable {
+public class Server extends UnicastRemoteObject implements IServer, Runnable {
 
+	private static final long serialVersionUID = 1L;
 
-	private IBroker broker;
+	public Server() throws RemoteException {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+	private static IBroker broker;
 
 	private static int currentSerializer = 0;
 
@@ -36,16 +44,18 @@ public class Server implements IServer, Runnable {
 	@Reference
 	private ITiffManager tiffManager;
 
-
-
-	@Reference(name = "broker")
 	public void setBalancer(IBroker broker) {
 		this.broker = broker;
+		System.out.println("this broker-> "+this.broker);
 	}
 
 	@Override
 	public void run() {
-		// runTest();
+		try {
+			setBalancer((IBroker) Naming.lookup("rmi://localhost:5555/redirecting"));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	// private void runTest() {
@@ -87,7 +97,11 @@ public class Server implements IServer, Runnable {
 			
 		File directory = getDirectory(sourcePath);
 		File[] files = getImagesInDirectory(directory);
-		serializers= broker.getImageSerializers();
+		try{
+			serializers= broker.getImageSerializers();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 		
 		for (File file : files) {
 			
@@ -143,14 +157,27 @@ public class Server implements IServer, Runnable {
 	}
 
 	private void processImage(String imagePath, String destPath, double phi, String callbackserializer) {
-		
-		int cores =  broker.getTotalProcessors();
+		int cores = 0;
+		try {
+			cores =  broker.getTotalProcessors();
+			
+		} catch (Exception e) {
+			//TODO: handle exception
+		}
 		System.out.println("total cores-> "+cores);
 		List<Rectangle> rectangles =  tiffManager.calculateRegions(imagePath);
 		System.out.println("total rectangles-> "+rectangles.size());
 		int rectanglesPerCore = rectangles.size()==1 ? 1 : rectangles.size()/cores;
 		System.out.println("rectangles per core-> "+rectanglesPerCore);
-		final String[] processors = broker.getTiffProcessors(Math.min(rectangles.size(), cores));	
+		
+		String[] processors=null;
+		try {
+			processors = broker.getTiffProcessors(Math.min(rectangles.size(), cores));	
+			
+		} catch (Exception e) {
+			//TODO: handle exception
+			e.printStackTrace();
+		}
 		System.out.println("total procesors->"+processors.length);
 		int currentRectangleOffset= 0;
 

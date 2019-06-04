@@ -14,6 +14,9 @@ import javax.imageio.spi.IIORegistry;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 
+// import com.github.jaiimageio.impl.plugins.tiff.TIFFImageReaderSpi;
+
+import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
@@ -26,10 +29,8 @@ import co.edu.icesi.interfaces.ISerializer;
 import co.edu.icesi.interfaces.IBroker;
 
 
-import com.github.jaiimageio.impl.plugins.tiff.TIFFImageReaderSpi;
 
 import org.osoa.sca.annotations.Property;
-import org.osoa.sca.annotations.Reference;
 
 import java.io.File;
 
@@ -56,11 +57,11 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
 
     public Serializer() throws RemoteException {
         super();
-        IIORegistry reg = IIORegistry.getDefaultInstance();
-		reg.registerServiceProvider(new TIFFImageReaderSpi());
+        // IIORegistry reg = IIORegistry.getDefaultInstance();
+		// reg.registerServiceProvider(new TIFFImageReaderSpi());
     }
 
-    @Reference(name = "broker")
+    // @Reference(name = "broker")
 	public void setBalancer(IBroker broker) {
 		this.broker = broker;
 	}
@@ -68,11 +69,19 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
     @Override
     public void run(){
         try {
+            setBalancer((IBroker)Naming.lookup("rmi://localhost:5555/redirecting"));
+            
+        } catch (Exception e) {
+            //TODO: handle exception
+            e.printStackTrace();
+        }
+        try {
 			registerServices();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+        }
+        
     }
 
     private void registerServices() throws Exception {
