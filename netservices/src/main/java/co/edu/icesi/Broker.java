@@ -88,7 +88,7 @@ public class Broker extends UnicastRemoteObject implements IBroker, Runnable {
 
 	private String getNextTiffProcessor() {
 		
-		if(currentService>tiffProcessors.size()){
+		if(currentService>=tiffProcessors.size()){
 			currentService=0;
 		}
 		String processor = tiffProcessors.get(currentService++).toString();
