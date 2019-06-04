@@ -90,14 +90,13 @@ public class Server implements IServer, Runnable {
 		serializers= broker.getImageSerializers();
 		
 
-		int i = 0;
 		for (File file : files) {
 			
 			String callbackserializer = getNextSerializer();
 			ISerializer serializer = getImageSerializer(callbackserializer);
 			System.out.println("wait if serialier is pathlocked");
 			waitWhileSerializerIsPathLocked(serializer);
-			String realDestPath = destPath+"/"+ i + file.getName();
+			String realDestPath = destPath+"/"+ file.getName();
 			System.out.println("processing-> "+file.getAbsolutePath());
 			
 			try {
@@ -111,7 +110,6 @@ public class Server implements IServer, Runnable {
 		
 			System.out.println("to dest->"+destPath+file.getName());
 			startFileProcessThread(file.getAbsolutePath(), realDestPath, phi, serializer, callbackserializer);
-			i++;
 		}	
 
 		
