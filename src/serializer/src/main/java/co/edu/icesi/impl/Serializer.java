@@ -40,7 +40,9 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
 
     private static int workers;
 	
-	private static int lock = 1;
+    private static int lock = 1;
+    
+    private static int lock2 = 1;
 	
     private static String destPath;
     
@@ -96,7 +98,12 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
 	@Override
 	public void setWorkers(int workers) {
 		Serializer.workers = workers;
-	}
+    }
+    
+    @Override
+    public boolean isPathLocked() throws RemoteException {
+        return lock2==0;
+    }
 
 	public static int getLock() {
 		return lock;
@@ -113,13 +120,15 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
 	@Override
 	public void setDestPath(String destPath) {
         System.out.println("destPath-> "+destPath);
-		this.destPath = destPath;
+        this.destPath = destPath;
+        this.lock2=0;
     }
     
     @Override
 	public void setSourcePath(String sourcePath) {
         System.out.println("sourcepath-> "+sourcePath);
-		this.sourcePath= sourcePath;
+        this.sourcePath= sourcePath;
+        this.lock2=0;
 	}
 
 	@Override
@@ -179,6 +188,13 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
         saveImageChunk(newImageChunk, destPath);
         
         lock=1;
+
+        workers-=1;
+        System.out.println("current workers = "+workers);
+        if(workers<=0){
+            this.lock2=1;
+            System.out.println("unlocked by path");
+        }
         System.out.println("unlocked");
 
 		

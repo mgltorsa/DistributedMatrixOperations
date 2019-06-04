@@ -17,4 +17,7 @@ public interface ISerializer extends Remote {
 	public boolean isLocked() throws RemoteException;
 	
     public boolean drawImage(int x, int y, int width, int height, int[][] image) throws RemoteException;
+
+    public boolean isPathLocked() throws RemoteException;
+
 }
