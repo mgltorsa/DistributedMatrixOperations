@@ -4,8 +4,8 @@ package co.edu.icesi;
 import java.awt.Rectangle;
 import java.io.File;
 
-
 import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,10 +91,24 @@ public class Server implements IServer, Runnable {
 		
 		for (File file : files) {
 			
+			String callbackserializer = getNextSerializer();
+			ISerializer serializer = getImageSerializer(callbackserializer);
+			System.out.println("wait if serialier is pathlocked");
+			waitWhileSerializerIsPathLocked(serializer);
+			String realDestPath = destPath+"/"+file.getName();
 			System.out.println("processing-> "+file.getAbsolutePath());
 			
+			try {
+				serializer.setDestPath(realDestPath);
+				serializer.setSourcePath(file.getAbsolutePath());
+				System.out.println("setted dest and source path");
+			} catch (RemoteException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
 			System.out.println("to dest->"+destPath+file.getName());
-			startFileProcessThread(file.getAbsolutePath(), destPath+"/"+file.getName(), phi, serializers[currentSerializer++]);
+			startFileProcessThread(file.getAbsolutePath(), realDestPath, phi, serializer, callbackserializer);
 		}	
 
 		
@@ -103,20 +117,41 @@ public class Server implements IServer, Runnable {
 		// Permitir a los procesadores iniciar trabajo
 	}
 
-	private void startFileProcessThread(final String absolutePath, final String destPath,final double phi,final String callbackserializer) {
-		new Thread(new Runnable(){
+	private String getNextSerializer() {
+		if(currentSerializer>=serializers.length){
+			currentSerializer=0;
+		}
+		
+		return serializers[currentSerializer++];
+	}
+
+	private void waitWhileSerializerIsPathLocked(ISerializer serializer) {
+		try {
+			boolean isPathLocked = serializer.isPathLocked();
+			System.out.println("is path locked: "+isPathLocked);
+			while(isPathLocked){
+
+				
+				System.out.println("serializer is path locked");
+				Thread.sleep(1000);
+				isPathLocked = serializer.isPathLocked();
+			}		
+			
+			System.out.println("serializer is nonPathLocked");
+		} catch (Exception e) {
+			//TODO: handle exception
+			e.printStackTrace();
+		}
+	}
+
+	private void startFileProcessThread(final String absolutePath, final String destPath, final double phi,
+			final ISerializer serializer ,final String callbackserializer) {
+		Thread thread = new Thread(new Runnable(){
 		
 			@Override
 			public void run() {
-				ISerializer serializer = getImageSerializer(callbackserializer);
 				try {
-					while(serializer.isLocked()){
-							System.out.println("serializer is locked");
-							Thread.sleep(1000);
-						}
-					serializer.setSourcePath(absolutePath);
-					serializer.setDestPath(destPath);
-					processImage(absolutePath, destPath, phi, callbackserializer);
+					processImage(absolutePath, destPath, phi, serializer, callbackserializer);
 				} catch (Exception e) {
 					//TODO: handle exception
 					e.printStackTrace();
@@ -124,7 +159,9 @@ public class Server implements IServer, Runnable {
 			}
 
 			
-		}).start();
+		});
+		thread.start();
+
 	}
 
 	private ISerializer getImageSerializer(String rmiEncodedUrl) {
@@ -142,15 +179,37 @@ public class Server implements IServer, Runnable {
 		return null;
 	}
 
-	private void processImage(String imagePath, String destPath, double phi, String callbackserializer) {
-		
-		int cores =  broker.getTotalProcessors();
+	private void processImage(String imagePath, String destPath, double phi, ISerializer serializer ,String callbackserializer) {
+		int cores = 0;
+		try {
+			cores =  broker.getTotalProcessors();
+			
+		} catch (Exception e) {
+			//TODO: handle exception
+			e.printStackTrace();
+		}
 		System.out.println("total cores-> "+cores);
 		List<Rectangle> rectangles =  tiffManager.calculateRegions(imagePath);
 		System.out.println("total rectangles-> "+rectangles.size());
+		try {
+			serializer.setWorkers(rectangles.size());
+			
+			System.out.println("setted workers-> "+rectangles.size());
+		} catch (Exception e) {
+			//TODO: handle exception
+			e.printStackTrace();
+		}
 		int rectanglesPerCore = rectangles.size()==1 ? 1 : rectangles.size()/cores;
 		System.out.println("rectangles per core-> "+rectanglesPerCore);
-		final String[] processors = broker.getTiffProcessors(Math.min(rectangles.size(), cores));	
+		
+		String[] processors=null;
+		try {
+			processors = broker.getTiffProcessors(Math.min(rectangles.size(), cores));	
+			
+		} catch (Exception e) {
+			//TODO: handle exception
+			e.printStackTrace();
+		}
 		System.out.println("total procesors->"+processors.length);
 		int currentRectangleOffset= 0;
 
