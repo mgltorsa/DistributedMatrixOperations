@@ -169,11 +169,11 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
             int newX = points[0][i] - xLeft;
             int newY = points[1][i] - yBottom;
 
-            System.out.println("c:-> " + c);
-            System.out.println("r:-> " + r);
-            System.out.println("X:-> " + newX);
-            System.out.println("Y:-> " + newY);
-            System.out.println("-------------------------");
+            // System.out.println("c:-> " + c);
+            // System.out.println("r:-> " + r);
+            // System.out.println("X:-> " + newX);
+            // System.out.println("Y:-> " + newY);
+            // System.out.println("-------------------------");
 
             newImageChunk.setRGB(newX, newY, originalImageChunk.getRGB(width - c - 1, r));
 
@@ -196,6 +196,10 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
         }
         System.out.println("unlocked");
 
+    }
+
+    private boolean joinImage(BufferedImage chunk){
+        return false;
     }
 
     public BufferedImage getImageChunk(int x, int y, int width, int height, String source) {
