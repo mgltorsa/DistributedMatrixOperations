@@ -1,3 +1,7 @@
+Para cada proyecto en src, ejecutar el script deploy en su carpeta correspondiente.
+
+ej: ./deploymatrix
+
 Servicios y puertos.
 
 BROKER
