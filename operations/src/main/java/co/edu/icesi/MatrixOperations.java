@@ -114,11 +114,8 @@ public class MatrixOperations implements IMatrixOperations {
 		Arrays.sort(ys);
 
 		points[0][0] = (int) (xs[0]);
-
 		points[0][1] = (int) xs[3];
-
 		points[1][0] = (int) (ys[0]);
-
 		points[1][1] = (int) ys[3];
 
 		return points;

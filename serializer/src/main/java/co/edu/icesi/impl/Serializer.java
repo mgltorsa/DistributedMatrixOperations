@@ -138,21 +138,13 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
         
         int lastPoint = width*height;
 
-
         int xLeft = points[0][lastPoint];
-
 
         int xRight = points[0][lastPoint+1];
 
-
-
         int yBottom = points[1][lastPoint];
 
-
-
         int yTop = points[1][lastPoint+1];
-
-
 
         BufferedImage newImageChunk = new BufferedImage(xRight-xLeft, yTop-yBottom, originalImageChunk.getType());
 
@@ -166,14 +158,8 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
             
             int newX = points[0][i]-xLeft;
             int newY = points[1][i]-yBottom;
-            try {             
-                newImageChunk.setRGB(newX, newY, originalImageChunk.getRGB(c, r));
-            } catch (Exception e) {
-                System.out.println("c-> "+c+" r-> "+r+" newX-> "+newX+" newY-> "+newY);
-                lock=1;
-                e.printStackTrace();    
-                break;            
-            }
+            newImageChunk.setRGB(newX, newY, originalImageChunk.getRGB(width-c-1, r));
+            
         }
 
         saveImageChunk(newImageChunk, destPath);
