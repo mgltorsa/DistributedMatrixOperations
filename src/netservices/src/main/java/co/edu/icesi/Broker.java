@@ -63,10 +63,10 @@ public class Broker implements IBroker {
 
 	private String getNextTiffProcessor() {
 		
-		String processor = tiffProcessors.get(currentService++).toString();
 		if(currentService>tiffProcessors.size()){
 			currentService=0;
 		}
+		String processor = tiffProcessors.get(currentService++).toString();
 		return processor;
 	}
 
