@@ -236,7 +236,7 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
             // ImageWriteParam irp = iw.getDefaultWriteParam();
             // irp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
             // iw.setOutput(ios);
-            ImageIO.write(chunk,"jpg",image);
+            ImageIO.write(chunk,mimetype,image);
             // iw.dispose();
         } catch (Exception e) {
             //TODO: handle exception
