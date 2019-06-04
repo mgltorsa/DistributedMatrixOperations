@@ -23,9 +23,7 @@ public class Client implements Runnable {
 
 	@Override
 	public void run() {
-		System.out.println("instruction: {simple-instruction},{directory with images},{dest directory}");
-		System.out.println("simple-instruction: {r,param} -> to rotate with param degrees");
-		System.out.println("type exit to close app");
+		
 		runApp();
 
 	}
@@ -36,24 +34,28 @@ public class Client implements Runnable {
 		System.out.println("starting client, type instruction");		
 		
 		while(true){
+			System.out.println("instruction: {simple-instruction},{directory with images},{dest directory}");
+		System.out.println("simple-instruction: {r,param} -> to rotate with param degrees");
+		System.out.println("type exit to close app");
 
-			server.recieve("./data/source/img.jpg", "./data/dest/img.jpg", 45d);
+			// server.recieve("./data/source/img.jpg", "./data/dest/img.jpg", 45d);
+			try{
 			String line = input.readLine();
-			if(line.toLowerCase().contains("exit")){
+			if(line.toLowerCase().equals("exit")){
 				break;
 			}else{
 				String[] instruction = parseInstruction(line);
 				String simpleInstruction = instruction[0];
 				String param = instruction[1];
-				try{
-					double phi = Double.parseDouble(param);
-					String sourcePath = instruction[2];
-					String directoryPath = instruction[3];
-					server.recieve(sourcePath,diretoryPath,phi);
-				}catch(Exception e){
-					System.out.println("error parseando param");
-				}
+				
+				double phi = Double.parseDouble(param);
+				String sourcePath = instruction[2];
+				String directoryPath = instruction[3];
+				server.recieve(sourcePath,directoryPath,phi);
+			}
 
+			}catch(Exception e){
+				e.printStackTrace();
 			}
 			
 		}

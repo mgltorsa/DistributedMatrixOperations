@@ -1,5 +1,6 @@
 package co.edu.icesi.impl;
 
+import java.io.Serializable;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -13,7 +14,7 @@ import co.edu.icesi.interfaces.ITiffProcessor;
 /**
  * TiffProcessor
  */
-public class TiffProcessor extends UnicastRemoteObject implements ITiffProcessor {
+public class TiffProcessor extends UnicastRemoteObject implements ITiffProcessor, Serializable {
 	
 	private static final long serialVersionUID = 1L;
 
@@ -23,28 +24,35 @@ public class TiffProcessor extends UnicastRemoteObject implements ITiffProcessor
 		super();
 	}
 
-	@Reference
 	private IMatrixOperations matrixOperations;
 
 	@Override
 	public void processSource(int x, int y, int width, int height,double phi, String callbackserializer) {
 		lock=true;
+		System.out.println("locked");
 		int[] initPoint = {x,y};
 		int[] lastPoint = {x+width,y+height};
 		int[][] rotatedPoints = matrixOperations.rotatePointsInRegion(initPoint, lastPoint, phi);
-
-		ISerializer serializer = getImageSerializer(callbackserializer);
-		while(serializer.isLocked()){
-			try {
-				
-				Thread.sleep(1000);
-			} catch (Exception e) {
-				//TODO: handle exception
-				e.printStackTrace();
-			}
-		}		
-		serializer.drawImage(x, y, width, height, rotatedPoints);
+		System.out.println("rotated with length -> "+rotatedPoints.length);
+		
+		try {
+			System.out.println("to rotate to-> "+callbackserializer );
+			ISerializer serializer = getImageSerializer(callbackserializer);
+			while(serializer.isLocked()){
+					System.out.println("serializer is locked");
+					Thread.sleep(1000);
+				}		
+			System.out.println("to draw image");
+			serializer.drawImage(x, y, width, height, rotatedPoints);
+			Thread.sleep(5000);
+			System.out.println("drawed image");
+		} catch (Exception e) {
+			//TODO: handle exception
+			e.printStackTrace();
+		}
+		
 		lock=false;
+		System.out.println("unlocked");
 		
 
 	}

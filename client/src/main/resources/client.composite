@@ -1,22 +1,3 @@
-<<<<<<< HEAD
-<?xml version="1.0" encoding="UTF-8"?>
-
-<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
-  xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1"
-  targetNamespace="http://frascati.ow2.org/helloworld-rmi"
-  name="OperationsRMI">
-
-  <service name="r" promote="client/Runnable">
-  </service>
-
-  <component name="client">
- 
-    <implementation.java class="co.edu.icesi.AppClient" />
- 
-  </component> 
-
-</composite>
-=======
 <?xml version="1.0" encoding="UTF-8"?>
 
 <composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
@@ -39,4 +20,3 @@
   </component>	
 
 </composite>
->>>>>>> d4755263fc315e725c44e61eecea6eef0e37914e

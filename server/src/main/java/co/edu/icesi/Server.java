@@ -94,7 +94,10 @@ public class Server implements IServer, Runnable {
 		
 		for (File file : files) {
 
-			startFileProcessThread(file.getAbsolutePath(), destPath, phi, serializers[currentSerializer++]);
+			System.out.println("processing-> "+file.getAbsolutePath());
+			
+			System.out.println("to dest->"+destPath+file.getName());
+			startFileProcessThread(file.getAbsolutePath(), destPath+"/"+file.getName(), phi, serializers[currentSerializer++]);
 		}	
 
 		
@@ -109,17 +112,17 @@ public class Server implements IServer, Runnable {
 			@Override
 			public void run() {
 				ISerializer serializer = getImageSerializer(callbackserializer);
-				while(serializer.isLocked()){
-					try {
-						
-						Thread.sleep(1000);
-					} catch (Exception e) {
-						//TODO: handle exception
-						e.printStackTrace();
-					}
+				try {
+					while(serializer.isLocked()){
+							System.out.println("serializer is locked");
+							Thread.sleep(1000);
+						}
+					serializer.setDestPath(destPath);
+					processImage(absolutePath, destPath, phi, callbackserializer);
+				} catch (Exception e) {
+					//TODO: handle exception
+					e.printStackTrace();
 				}
-				serializer.setDestPath(destPath);
-				processImage(absolutePath, destPath, phi, callbackserializer);
 			}
 
 			
@@ -144,10 +147,13 @@ public class Server implements IServer, Runnable {
 	private void processImage(String imagePath, String destPath, double phi, String callbackserializer) {
 		
 		int cores =  broker.getTotalProcessors();
+		System.out.println("total cores-> "+cores);
 		List<Rectangle> rectangles =  tiffManager.calculateRegions(imagePath);
+		System.out.println("total rectangles-> "+rectangles.size());
 		int rectanglesPerCore = rectangles.size()==1 ? 1 : rectangles.size()/cores;
+		System.out.println("rectangles per core-> "+rectanglesPerCore);
 		final String[] processors = broker.getTiffProcessors(Math.min(rectangles.size(), cores));	
-		
+		System.out.println("total procesors->"+processors.length);
 		int currentRectangleOffset= 0;
 
 
@@ -156,9 +162,11 @@ public class Server implements IServer, Runnable {
 		for (int i = 0; i < processors.length; i++) {
 
 			Rectangle[] threadRectangles = new Rectangle[rectanglesPerCore];
-			rectangles.subList(currentRectangleOffset, rectanglesPerCore);
+			System.out.println("thread rectangles size-> "+threadRectangles.length);
+			rectangles.subList(currentRectangleOffset, threadRectangles.length).toArray(threadRectangles);
 
-			currentRectangleOffset+=rectanglesPerCore;
+			currentRectangleOffset+=threadRectangles.length;
+			System.out.println("current offset-> "+currentRectangleOffset);
 			
 			runThreadProcessor(processors[i], threadRectangles, phi, callbackserializer);
 
@@ -172,7 +180,7 @@ public class Server implements IServer, Runnable {
 			@Override
 			public void run() {
 				for (int i = 0; i < threadRectangles.length; i++) {
-					ITiffProcessor processor = getProcessor(processorStr);
+					final ITiffProcessor processor = getProcessor(processorStr);
 					Rectangle rectangle = threadRectangles[i];
 					int x = (int) rectangle.getX();
 					int y = (int) rectangle.getY();
@@ -223,7 +231,10 @@ public class Server implements IServer, Runnable {
 		List<File> imagesFilesList = new ArrayList<File>();
 		for (File file : files) {
 			if(tiffManager.isImage(file)){
+				System.out.println(file.getAbsolutePath()+" is an image");
 				imagesFilesList.add(file);
+			}else{
+				System.out.println(file.getAbsolutePath()+" is not an image");
 			}
 		}
 		File[] imageFiles = new File[imagesFilesList.size()];

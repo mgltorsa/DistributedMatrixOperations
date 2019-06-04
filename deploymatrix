@@ -1,0 +1,5 @@
+cd operations/
+frascati compile src/main/java matrix
+frascati run src/main/resources/matrix -libpath matrix.jar
+cd ..
+

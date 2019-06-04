@@ -16,7 +16,7 @@ import java.rmi.server.UnicastRemoteObject;
 
 import org.w3c.dom.ls.LSOutput;
 import java.net.InetAddress;
-
+import java.io.Serializable;
 
 import co.edu.icesi.interfaces.ISerializer;
 import co.edu.icesi.interfaces.IBroker;
@@ -31,11 +31,11 @@ import java.io.File;
 /**
  * Serializer
  */
-public class Serializer extends UnicastRemoteObject implements ISerializer, Runnable{
+public class Serializer extends UnicastRemoteObject implements ISerializer, Runnable, Serializable{
 
     private static int workers;
 	
-	private static int lock;
+	private static int lock = 1;
 	
     private static String destPath;
     

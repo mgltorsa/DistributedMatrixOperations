@@ -66,7 +66,6 @@ public class MatrixOperations implements IMatrixOperations {
 
 
         //n = {{x,x1,x2,x3,x4...xn},{y,y1,y2,y3,...yn,yn}}
-        System.out.println(n);
         int[] dMiddlePoint = getDMiddlePoint(middlepoint);
 
         int xIndex = 0;
@@ -157,7 +156,7 @@ public class MatrixOperations implements IMatrixOperations {
     private int[] getDMiddlePoint(int[] middlepoint){
         int dx = middlepoint[0];
         int dy= middlepoint[1];
-        return null; 
+        return new int[]{dx,dy}; 
     }
 
     private double[][] getRotationMatrix(double phi) {
