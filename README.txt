@@ -19,6 +19,14 @@ Las anteriores son instrucciones para hacer el deployment monolitico del sistema
 Para desplegar en diferentes maquinas, puede correr los scripts anteriores pero debe asegurarse que los references de rmi en los respectivos archivos composites (ubicados en src/main/resources de cada proyect) esten correctamente configurados, es decir, tengan las ip correspodientes en donde estan montados los diferentes servicios.
 
 
+En caso de que los scripts anteriores no funcionen correctamente debera dirigirse al folder correspondiente para cada proyecto y visualizar las instrucciones en el respectivo archivo README.txt. Recuerde que, el orden de inicializacion debe ser:
+
+netservices
+operations
+serializer
+server
+client
+
 
 //Informacion RMI
 Servicios y puertos.
