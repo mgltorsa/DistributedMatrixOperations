@@ -47,6 +47,11 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
     
     private static String sourcePath;
 
+    private static int currentSerialization;
+
+    private static int currentBuffered;
+
+
     @Property
     private String serviceName;
 
@@ -168,7 +173,10 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
             
         }
 
-        saveImageChunk(newImageChunk, destPath);
+
+        if(!joinImage(newImageChunk)){
+            saveImageChunk(newImageChunk, destPath);
+        }
         
         lock=1;
 
@@ -183,7 +191,11 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
 		
     }
     
-    public BufferedImage getImageChunk(int x, int y, int width, int height, String source){
+    private boolean joinImage(BufferedImage imageChunk) {
+        return false;
+    }
+
+    public BufferedImage getImageChunk(int x, int y, int width, int height, String source) {
         try{
         File image = new File(source);
         ImageInputStream iis = ImageIO.createImageInputStream(image);
@@ -210,8 +222,14 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
 
     public void saveImageChunk(BufferedImage chunk, String dest){
         try {
-            File image = new File(dest);
-            System.out.println("image file in-> " +  dest);
+            String[] infoDest =  split(dest,".");
+            String splitedname = infoDest[0];
+            String mimetype = infoDest[1];
+            String realDest = splitedname+"_"+currentSerialization+"."+mimetype;
+            File image = new File(realDest);
+
+
+            System.out.println("image file in-> " +  realDest);
             // ImageOutputStream ios = ImageIO.createImageOutputStream(image);
             // ImageReader ir = ImageIO.getImageReaders(ios).next();
             // ImageWriter iw = ImageIO.getImageWriter(ir);
@@ -225,5 +243,9 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
             e.printStackTrace();
         }
 
+    }
+
+    private String[] split(String dest, String string) {
+        return dest.replace('.', ',').split(",");
     }
 }
