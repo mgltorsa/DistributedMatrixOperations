@@ -19,12 +19,13 @@ public class TiffProcessor extends UnicastRemoteObject implements ITiffProcessor
 	private static final long serialVersionUID = 1L;
 
 	private static boolean lock = false;
+	
+	private IMatrixOperations matrixOperations;
 
 	public TiffProcessor() throws RemoteException {
 		super();
 	}
 
-	private IMatrixOperations matrixOperations;
 
 	@Override
 	public void processSource(int x, int y, int width, int height,double phi, String callbackserializer) {

@@ -16,5 +16,5 @@ public interface ISerializer extends Remote{
 	
 	public boolean isLocked() throws RemoteException;
 	
-    public boolean drawImage(int x, int y, int width, int height, int[][] rotatedPoints) throws RemoteException;
+    public void drawImage(int x, int y, int width, int height, int[][] rotatedPoints) throws RemoteException;
 }

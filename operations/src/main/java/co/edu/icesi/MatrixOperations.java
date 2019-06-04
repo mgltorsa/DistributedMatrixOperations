@@ -58,6 +58,9 @@ public class MatrixOperations implements IMatrixOperations {
         int n = getPointsInRegion(initPoint, lastPoint);
 
         //Corners of the image rotated
+        System.out.println(lastPoint[0]+"-"+initPoint[0]);
+        System.out.println(lastPoint[1]+"-"+initPoint[1]);
+
         int[][] corners = imageCornersRotated(lastPoint[0]-initPoint[0], lastPoint[1]-initPoint[1], phi);
 
         //n+2 porque se necesitan los puntos extremos de la imagen 

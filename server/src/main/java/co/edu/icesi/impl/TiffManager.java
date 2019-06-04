@@ -63,8 +63,10 @@ public class TiffManager implements ITiffManager {
 
         List<Rectangle> rectangles = new ArrayList<Rectangle>();
         for (int i = 0; i < width; i+=MAX_PIXELS_PER_BLOCK) {
+            int rwidth = width%MAX_PIXELS_PER_BLOCK != 0 ?  width%MAX_PIXELS_PER_BLOCK : MAX_PIXELS_PER_BLOCK;
             for (int j = 0; j < height; j+=MAX_PIXELS_PER_BLOCK) {
-                rectangles.add(new Rectangle(i,j,MAX_PIXELS_PER_BLOCK ,MAX_PIXELS_PER_BLOCK));
+                int rheight = height%MAX_PIXELS_PER_BLOCK !=0 ? height%MAX_PIXELS_PER_BLOCK : MAX_PIXELS_PER_BLOCK;
+                rectangles.add(new Rectangle(i,j,rwidth,rheight ));
             }
             
         }

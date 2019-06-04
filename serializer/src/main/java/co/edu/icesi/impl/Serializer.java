@@ -5,6 +5,8 @@ import java.awt.image.BufferedImage;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.*;
+
 import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
 import javax.imageio.ImageWriter;
@@ -105,11 +107,13 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
 
 	@Override
 	public void setDestPath(String destPath) {
+        System.out.println("destPath-> "+destPath);
 		this.destPath = destPath;
     }
     
     @Override
 	public void setSourcePath(String sourcePath) {
+        System.out.println("sourcepath-> "+sourcePath);
 		this.sourcePath= sourcePath;
 	}
 
@@ -117,37 +121,61 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
 	public void drawImage(int x, int y, int width, int height, int[][] points) {
         //0 is locked
         lock=0;
+        System.out.println("locked");
+
+        System.out.println("x-> "+x);
+        System.out.println("y-> "+y);
+        System.out.println("width-> "+width);
+        System.out.println("height-> "+height);
+
 		// TODO Auto-generated method stub
 		BufferedImage originalImageChunk = getImageChunk(x, y, width, height, sourcePath);
         
         int lastPoint = width*height;
 
+
         int xLeft = points[0][lastPoint];
+
 
         int xRight = points[0][lastPoint+1];
 
+
+
         int yBottom = points[1][lastPoint];
+
+
 
         int yTop = points[1][lastPoint+1];
 
-        BufferedImage newImageChunk = new BufferedImage(xRight-xLeft, yTop-yBottom, BufferedImage.TYPE_INT_RGB);
+
+
+        BufferedImage newImageChunk = new BufferedImage(xRight-xLeft, yTop-yBottom, originalImageChunk.getType());
 
         double w = width;
 
         for(int i = 0; i < lastPoint; i++){
-
-            int c = lastPoint%width;
-            int r = (int) (lastPoint/w);
-
+            
+            //TODO: handle exception
+            int c = i%width;
+            int r = (int) (i/w);
+            
             int newX = points[0][i]-xLeft;
             int newY = points[1][i]-yBottom;
-
-            newImageChunk.setRGB(newX, newY, originalImageChunk.getRGB(c, r));
+            try {             
+                newImageChunk.setRGB(newX, newY, originalImageChunk.getRGB(c, r));
+            } catch (Exception e) {
+                System.out.println("c-> "+c+" r-> "+r+" newX-> "+newX+" newY-> "+newY);
+                lock=1;
+                e.printStackTrace();    
+                break;            
+            }
         }
 
         saveImageChunk(newImageChunk, destPath);
         
         lock=1;
+        System.out.println("unlocked");
+
 		
     }
     
@@ -178,16 +206,16 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
 
     public void saveImageChunk(BufferedImage chunk, String dest){
         try {
-        File image = new File(dest);
-        ImageOutputStream ios = ImageIO.createImageOutputStream(image);
-        ImageReader ir = ImageIO.getImageReaders(ios).next();
-        ImageWriter iw = ImageIO.getImageWriter(ir);
-
-            iw.setOutput(ios);
-            iw.write(null, new IIOImage(chunk, null, null), null);
-            iw.dispose();
-            ios.close();
-            
+            File image = new File(dest);
+            System.out.println("image file in-> " +  dest);
+            // ImageOutputStream ios = ImageIO.createImageOutputStream(image);
+            // ImageReader ir = ImageIO.getImageReaders(ios).next();
+            // ImageWriter iw = ImageIO.getImageWriter(ir);
+            // ImageWriteParam irp = iw.getDefaultWriteParam();
+            // irp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+            // iw.setOutput(ios);
+            ImageIO.write(chunk,"jpg",image);
+            // iw.dispose();
         } catch (Exception e) {
             //TODO: handle exception
             e.printStackTrace();

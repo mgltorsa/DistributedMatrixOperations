@@ -1,14 +1,11 @@
 
 package co.edu.icesi;
 
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.io.File;
 
 
 import java.rmi.Naming;
-import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,7 +90,7 @@ public class Server implements IServer, Runnable {
 		serializers= broker.getImageSerializers();
 		
 		for (File file : files) {
-
+			
 			System.out.println("processing-> "+file.getAbsolutePath());
 			
 			System.out.println("to dest->"+destPath+file.getName());
@@ -117,6 +114,7 @@ public class Server implements IServer, Runnable {
 							System.out.println("serializer is locked");
 							Thread.sleep(1000);
 						}
+					serializer.setSourcePath(absolutePath);
 					serializer.setDestPath(destPath);
 					processImage(absolutePath, destPath, phi, callbackserializer);
 				} catch (Exception e) {

@@ -13,15 +13,35 @@
 		<frascati:binding.rmi host="localhost"
 			serviceName="tiff" port="5099" />
 	</service>
+
+	<component name="matrixOperations">
+
+		<service name="operations">
+			<interface.java
+				interface="co.edu.icesi.interfaces.IMatrixOperations"/>
+		</service>
+
+		<implementation.java
+			class="co.edu.icesi.MatrixOperations" />
+
+	</component>
+
+    <component name="vectorOperations">
+		<implementation.java
+			class="co.edu.icesi.vectors.VectorOperations" />
+	</component>
+
+    <wire source="matrixOperations/vectorOperations"
+		target="vectorOperations/IVectorOperations" />
 	
 
 	<component name="imageOperations">
-		<reference name="operations">
+		<!--<reference name="operations">
 			<frascati:binding.rmi host="localhost"
 				serviceName="operations" port="5070" />
 			<interface.java
 					interface="co.edu.icesi.interfaces.IMatrixOperations"/>
-		</reference>
+		</reference>-->
 		<service name="tiffProcessor">
 			<interface.java
 				interface="co.edu.icesi.interfaces.ITiffProcessor" />
@@ -51,6 +71,9 @@
 		<implementation.java
 			class="co.edu.icesi.Register" />
 	</component>
+
+	<wire source="imageOperations/operations" target="matrixOperations/operations" />
+	
 
 	
 
