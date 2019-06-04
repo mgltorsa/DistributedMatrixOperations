@@ -1,12 +1,26 @@
-./depĺoynetservices
+cd src
 
-./deployoperations
+cd netservices/
+gnome-terminal -e ./deploynetservices
+cd ..
 
-./deployserializer
+cd operations/
+gnome-terminal -e ./deploymatrix
+gnome-terminal -e ./deployoperations
+cd ..
 
-./deployserver
+cd serializer/
+gnome-terminal -e ./deployserializer
+cd ..
 
-./deployclient
+cd server/
+gnome-terminal -e ./deployserver
+cd ..
+
+cd client/
+gnome-terminal -e ./deployclient
+
+
 
 
 

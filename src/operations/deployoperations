@@ -1,7 +1,7 @@
-cd operations/
+
 
 frascati compile src/main/java operations
 frascati run src/main/resources/operations -libpath operations.jar -s r -m run
-cd ..
+
 
 

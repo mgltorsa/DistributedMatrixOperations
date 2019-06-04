@@ -26,7 +26,6 @@ import co.edu.icesi.interfaces.ISerializer;
 import co.edu.icesi.interfaces.IBroker;
 
 
-import com.github.jaiimageio.impl.plugins.tiff.TIFFImageReaderSpi;
 
 import org.osoa.sca.annotations.Property;
 import org.osoa.sca.annotations.Reference;
@@ -58,8 +57,6 @@ public class Serializer extends UnicastRemoteObject implements ISerializer, Runn
 
     public Serializer() throws RemoteException {
         super();
-        IIORegistry reg = IIORegistry.getDefaultInstance();
-		reg.registerServiceProvider(new TIFFImageReaderSpi());
     }
 
     @Reference(name = "broker")
