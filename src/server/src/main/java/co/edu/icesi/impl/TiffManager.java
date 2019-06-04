@@ -19,8 +19,8 @@ import co.edu.icesi.interfaces.ITiffManager;
  */
 public class TiffManager implements ITiffManager {
 
-    public static final int MAX_PIXELS_PER_BLOCK = 1024;
-    public static final int MAX_PIXELS_IN_MEMORY = 1024*1024;
+    public static final int MAX_PIXELS_PER_BLOCK = 4096;
+    public static final int MAX_PIXELS_IN_MEMORY = 4096*4096;
 
     private ImageReader getImageReader(String sourcePath) throws IOException {
         File file = new File(sourcePath);
