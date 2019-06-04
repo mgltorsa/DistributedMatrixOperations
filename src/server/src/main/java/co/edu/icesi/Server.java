@@ -89,13 +89,15 @@ public class Server implements IServer, Runnable {
 		File[] files = getImagesInDirectory(directory);
 		serializers= broker.getImageSerializers();
 		
+
+		int i = 0;
 		for (File file : files) {
 			
 			String callbackserializer = getNextSerializer();
 			ISerializer serializer = getImageSerializer(callbackserializer);
 			System.out.println("wait if serialier is pathlocked");
 			waitWhileSerializerIsPathLocked(serializer);
-			String realDestPath = destPath+"/"+file.getName();
+			String realDestPath = destPath+"/"+ i + file.getName();
 			System.out.println("processing-> "+file.getAbsolutePath());
 			
 			try {
@@ -109,6 +111,7 @@ public class Server implements IServer, Runnable {
 		
 			System.out.println("to dest->"+destPath+file.getName());
 			startFileProcessThread(file.getAbsolutePath(), realDestPath, phi, serializer, callbackserializer);
+			i++;
 		}	
 
 		
@@ -210,13 +213,13 @@ public class Server implements IServer, Runnable {
 			//TODO: handle exception
 			e.printStackTrace();
 		}
-		System.out.println("total procesors->"+processors.length);
+		// System.out.println("total procesors->"+processors.length);
 		int currentRectangleOffset= 0;
 
 
 		
 		//For each processor we will process an image region.
-		for (int i = 0; i < processors.length; i++) {
+		for (int i = 0; i < processors.length && processors!=null; i++) {
 
 			Rectangle[] threadRectangles = new Rectangle[rectanglesPerCore];
 			System.out.println("thread rectangles size-> "+threadRectangles.length);

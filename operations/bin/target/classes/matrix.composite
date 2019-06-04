@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<composite xmlns="http://www.osoa.org/xmlns/sca/1.0"
+	xmlns:frascati="http://frascati.ow2.org/xmlns/sca/1.1"
+	targetNamespace="http://frascati.ow2.org/helloworld-rmi"
+	name="OperationsRMI">
+
+	<service name="m" promote="matrixOperations/operations">
+		<frascati:binding.rmi host="localhost"
+			serviceName="operations" port="5070" />
+	</service>
+
+    <component name="matrixOperations">
+
+		<service name="operations">
+			<interface.java
+				interface="co.edu.icesi.interfaces.IMatrixOperations"/>
+		</service>
+
+		<implementation.java
+			class="co.edu.icesi.MatrixOperations" />
+
+	</component>
+
+    <component name="vectorOperations">
+		<implementation.java
+			class="co.edu.icesi.vectors.VectorOperations" />
+	</component>
+
+    <wire source="matrixOperations/vectorOperations"
+		target="vectorOperations/IVectorOperations" />
+
+
+</composite>
